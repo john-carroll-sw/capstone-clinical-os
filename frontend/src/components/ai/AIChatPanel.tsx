@@ -55,11 +55,28 @@ import { axiosInstance } from "../../api/axiosInstance";
 import { fetchWithAuth } from "../../api/authFetch";
 import { env } from "../../config/env";
 
-// Quick prompts (hardcoded for now since we're removing mock data dependency)
-const QUICK_PROMPTS = [
-  "How's my portfolio?",
+// Surface-specific quick prompts
+const LEADERSHIP_PROMPTS = [
+  "How is the clinical AI program performing?",
+  "What needs attention this week?",
+  "Show me outcomes for pharmacy",
+  "Any safety incidents?",
+  "What should I focus on?",
+];
+
+const GOVERNANCE_PROMPTS = [
+  "Show me pending use case approvals",
+  "Any flagged AI interactions this week?",
+  "What's the audit summary for pharmacy?",
+  "Are there any policy violations?",
+  "Which use cases need quarterly review?",
+];
+
+// Fallback for unknown surfaces
+const DEFAULT_PROMPTS = [
+  "How's the clinical AI program?",
   "What needs attention?",
-  "Show me wins this week",
+  "Show me recent activity",
   "Any pending decisions?",
   "What should I focus on?",
 ];
@@ -105,6 +122,7 @@ interface ChatThreadPayload {
 interface AIChatPanelProps {
   isOpen: boolean;
   onClose: () => void;
+  surface?: string;
 }
 
 
@@ -192,7 +210,7 @@ function getGreeting(): string {
   return "Good evening";
 }
 
-export function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
+export function AIChatPanel({ isOpen, onClose, surface = 'leadership' }: AIChatPanelProps) {
   // Get voice input preference from store
   const [voiceInputEnabled] = usePreference('voiceInputEnabled');
   const { profile } = useUser();
@@ -201,6 +219,11 @@ export function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
   // Get user's first name for personalized greeting
   const firstName = getFirstName(profile?.displayName);
   const greeting = getGreeting();
+
+  // Surface-specific quick prompts
+  const QUICK_PROMPTS = surface === 'governance' ? GOVERNANCE_PROMPTS
+    : surface === 'leadership' ? LEADERSHIP_PROMPTS
+    : DEFAULT_PROMPTS;
   
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -316,19 +339,27 @@ export function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
     return recognition;
   }, [isSpeechSupported]);
 
+  // Surface-specific welcome message
+  const getWelcomeMessage = () => {
+    if (surface === 'governance') {
+      return `${greeting}, ${firstName}! I can help you review use case approvals, audit logs, policy compliance, and flagged interactions. What would you like to look at?`;
+    }
+    return `${greeting}, ${firstName}! How can I help you with the clinical AI program today?`;
+  };
+
   // Initialize welcome message when panel opens and we have user info
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       setMessages([{
         id: "welcome",
         role: "assistant",
-        content: `${greeting}, ${firstName}! How can I help you with your portfolio today?`,
+        content: getWelcomeMessage(),
         timestamp: new Date().toISOString(),
         responseType: "text_only",
       }]);
       setAreQuickPromptsOpen(true);
     }
-  }, [isOpen, firstName, greeting, messages.length]);
+  }, [isOpen, firstName, greeting, messages.length, surface]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -1012,7 +1043,7 @@ export function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
                     ClinicalOS Assistant
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    Ask anything about your portfolio
+                    {surface === 'governance' ? 'Ask about approvals, audits & compliance' : 'Ask anything about clinical AI operations'}
                   </Typography>
                 </Box>
               </Box>

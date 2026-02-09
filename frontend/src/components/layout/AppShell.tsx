@@ -42,6 +42,7 @@ import { ReportsPage } from "../pages/ReportsPage";
 import { SettingsPage } from "../pages/SettingsPage";
 import { DevPanelPage } from "../pages/DevPanelPage";
 import { ClinicianPanel } from "../clinician/ClinicianPanel";
+import { GovernancePage } from "../governance/GovernancePage";
 
 // ─── Route → Surface mapping ──────────────────────────────────
 
@@ -278,22 +279,7 @@ export function AppShell() {
         return <ClinicianPanel department={subPage === 'nursing' ? 'nursing' : 'pharmacy'} />;
       
       case "governance":
-        // Phase 4 placeholder — will be replaced with GovernancePage
-        return (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'text.secondary' }}>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h5" sx={{ mb: 1 }}>
-                Governance — {
-                  subPage === 'audit' ? 'Audit Log' :
-                  subPage === 'rbac' ? 'Access Control' :
-                  subPage === 'allowlists' ? 'Allowlists & Templates' :
-                  'Use Case Registry'
-                }
-              </Typography>
-              <Typography variant="body2">Coming in Phase 4</Typography>
-            </Box>
-          </Box>
-        );
+        return <GovernancePage subPage={subPage} />;
       
       case "dev-panel":
         return <DevPanelPage />;
@@ -379,6 +365,7 @@ export function AppShell() {
         <AIChatPanel 
           isOpen={isChatOpen} 
           onClose={() => setIsChatOpen(false)}
+          surface={surface}
         />
       )}
 

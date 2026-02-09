@@ -8,3 +8,5 @@ export * from './personas';
 export * from './patients';
 export * from './pharmacyAlerts';
 export * from './nursingHandoffs';
+export * from './governanceRegistry';
+export * from './auditLog';
