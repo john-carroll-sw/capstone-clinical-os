@@ -1,9 +1,12 @@
 /**
  * App Shell - Main application container using Material UI
- * Integrates sidebar, content area, and AI chat panel
- * Supports fully hidden/visible sidebar toggle
  * 
- * Uses PreferencesStore for experimental feature flags.
+ * Route structure:
+ * /                        → Demo Index (full-page, no sidebar)
+ * /leadership/*            → Leadership Dashboard surface
+ * /clinician/*             → Clinician Panel surface
+ * /governance/*            → Governance Control Plane surface
+ * /settings                → Settings (shared)
  */
 
 import { useState, useEffect } from "react";
@@ -31,6 +34,7 @@ import { usePreferences } from "../../services/preferencesStore";
 import { AppSidebar } from "./AppSidebar";
 import { AIChatPanel } from "../ai/AIChatPanel";
 import { FeedbackWidget } from "../feedback/FeedbackWidget";
+import { DemoIndexPage } from "../pages/DemoIndexPage";
 import { ForYouPage } from "../pages/ForYouPage";
 import { HealthcareDashboard } from "../pages/HealthcareDashboard";
 import { InsightsAlertsPage } from "../pages/InsightsAlertsPage";
@@ -38,42 +42,68 @@ import { ReportsPage } from "../pages/ReportsPage";
 import { SettingsPage } from "../pages/SettingsPage";
 import { DevPanelPage } from "../pages/DevPanelPage";
 
-// Page types
-type Page = "home" | "dashboard" | "signals" | "reports" | "settings" | "clinician" | "governance" | "dev-panel";
+// ─── Route → Surface mapping ──────────────────────────────────
 
-// Map URL paths to page IDs
-const PATH_TO_PAGE: Record<string, Page> = {
-  "/": "home",
-  "/dashboard": "dashboard",
-  "/dashboard/pharmacy": "dashboard",
-  "/dashboard/nursing": "dashboard",
-  "/signals": "signals",
-  "/reports": "reports",
-  "/settings": "settings",
-  "/clinician": "clinician",
-  "/clinician/pharmacy": "clinician",
-  "/clinician/nursing": "clinician",
-  "/governance": "governance",
-  "/governance/registry": "governance",
-  "/governance/audit": "governance",
-  "/governance/rbac": "governance",
-  "/governance/allowlists": "governance",
-  "/dev-panel": "dev-panel",
-};
+export type Surface = "index" | "leadership" | "clinician" | "governance" | "settings" | "dev-panel";
 
-// Map page IDs to URL paths
-const PAGE_TO_PATH: Record<Page, string> = {
-  "home": "/",
-  "dashboard": "/dashboard",
-  "signals": "/signals",
-  "reports": "/reports",
-  "settings": "/settings",
-  "clinician": "/clinician",
-  "governance": "/governance",
-  "dev-panel": "/dev-panel",
-};
+export type LeadershipPage = "briefing" | "dashboard" | "signals" | "reports";
+export type ClinicianPage = "pharmacy" | "nursing";
+export type GovernancePage = "registry" | "audit" | "rbac" | "allowlists";
 
-// Ask AI Button Component for header
+/** Derive the active surface from the current pathname */
+function getSurface(pathname: string): Surface {
+  if (pathname === "/") return "index";
+  if (pathname.startsWith("/leadership")) return "leadership";
+  if (pathname.startsWith("/clinician")) return "clinician";
+  if (pathname.startsWith("/governance")) return "governance";
+  if (pathname.startsWith("/settings")) return "settings";
+  if (pathname.startsWith("/dev-panel")) return "dev-panel";
+  return "index";
+}
+
+/** Derive the active sub-page within a surface */
+function getSubPage(pathname: string): string {
+  // Leadership sub-pages
+  if (pathname === "/leadership" || pathname === "/leadership/briefing") return "briefing";
+  if (pathname === "/leadership/dashboard") return "dashboard";
+  if (pathname === "/leadership/signals") return "signals";
+  if (pathname === "/leadership/reports") return "reports";
+  // Clinician sub-pages
+  if (pathname === "/clinician" || pathname === "/clinician/pharmacy") return "pharmacy";
+  if (pathname === "/clinician/nursing") return "nursing";
+  // Governance sub-pages
+  if (pathname === "/governance" || pathname === "/governance/registry") return "registry";
+  if (pathname === "/governance/audit") return "audit";
+  if (pathname === "/governance/rbac") return "rbac";
+  if (pathname === "/governance/allowlists") return "allowlists";
+  return "";
+}
+
+/** Get human-readable page title */
+function getPageTitle(surface: Surface, subPage: string): string {
+  const titles: Record<string, Record<string, string>> = {
+    leadership: {
+      briefing: "AI Briefing",
+      dashboard: "Outcomes Dashboard",
+      signals: "Signals & Incidents",
+      reports: "Reports",
+    },
+    clinician: {
+      pharmacy: "Pharmacy — Alert Review",
+      nursing: "Nursing — Shift Handoff",
+    },
+    governance: {
+      registry: "Use Case Registry",
+      audit: "Audit Log",
+      rbac: "Access Control",
+      allowlists: "Allowlists & Templates",
+    },
+  };
+  return titles[surface]?.[subPage] || "ClinicalOS";
+}
+
+// ─── Ask AI Button ────────────────────────────────────────────
+
 function AskAIButton({ onClick }: { onClick: () => void }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -102,7 +132,7 @@ function AskAIButton({ onClick }: { onClick: () => void }) {
       }}
     >
       <Mic fontSize="small" />
-    <Typography sx={{ fontWeight: 500, fontSize: "0.875rem" }}>Ask AI</Typography>
+      <Typography sx={{ fontWeight: 500, fontSize: "0.875rem" }}>Ask AI</Typography>
       <Box
         sx={{
           display: { xs: "none", sm: "flex" },
@@ -122,16 +152,21 @@ function AskAIButton({ onClick }: { onClick: () => void }) {
   );
 }
 
+// ─── Constants ────────────────────────────────────────────────
+
 const SIDEBAR_WIDTH = 260;
 const SIDEBAR_COLLAPSED_WIDTH = 72;
+
+// ─── App Shell ────────────────────────────────────────────────
 
 export function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
   const { persona } = usePersona();
   
-  // Derive active page from URL
-  const activePage: Page = PATH_TO_PAGE[location.pathname] || "home";
+  // Derive active surface and sub-page from URL
+  const surface = getSurface(location.pathname);
+  const subPage = getSubPage(location.pathname);
   
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [feedbackStyle, setFeedbackStyle] = useState<'quick' | 'guided'>('quick');
@@ -148,18 +183,12 @@ export function AppShell() {
 
   // Update document title
   useEffect(() => {
-    const titles: Record<Page, string> = {
-      home: "AI Briefing",
-      dashboard: "Outcomes Dashboard",
-      signals: "Signals & Incidents",
-      reports: "Reports",
-      settings: "Settings",
-      clinician: "Clinician Panel",
-      governance: "Governance",
-      "dev-panel": "Dev Panel",
-    };
-    document.title = `${titles[activePage]} | ClinicalOS`;
-  }, [activePage]);
+    if (surface === "index") {
+      document.title = "ClinicalOS — Clinical AI Governance";
+    } else {
+      document.title = `${getPageTitle(surface, subPage)} | ClinicalOS`;
+    }
+  }, [surface, subPage]);
 
   // Handle keyboard shortcuts
   useEffect(() => {
@@ -168,7 +197,6 @@ export function AppShell() {
         e.preventDefault();
         setIsChatOpen((prev) => !prev);
       }
-      // Toggle sidebar with Cmd/Ctrl + B
       if ((e.metaKey || e.ctrlKey) && e.key === "b") {
         e.preventDefault();
         setIsSidebarHidden((prev) => !prev);
@@ -179,95 +207,101 @@ export function AppShell() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleNavigate = (pageId: string) => {
-    const path = PAGE_TO_PATH[pageId as Page] || "/dashboard";
+  const handleNavigate = (path: string) => {
     navigate(path);
-    // Clear highlight when navigating away from insights-alerts
-    if (pageId !== "insights-alerts") {
-      setHighlightedAlertId(null);
-    }
+    setHighlightedAlertId(null);
   };
 
-  // Handle "Take Action" from OKR Dashboard - navigate to Insights & Alerts and highlight the alert
+  // Handle "Take Action" from Dashboard - navigate to Signals and highlight
   const handleTakeAction = (initiativeId: string) => {
     setHighlightedAlertId(initiativeId);
-    navigate("/insights");
+    navigate("/leadership/signals");
   };
 
-  // Clear the highlighted alert
   const handleClearHighlight = () => {
     setHighlightedAlertId(null);
   };
 
+  // ─── Demo Index: full-page, no shell chrome ─────────────────
+  if (surface === "index") {
+    return <DemoIndexPage />;
+  }
+
+  // ─── Render page content based on surface + sub-page ────────
   const renderPage = () => {
-    switch (activePage) {
-      case "home":
-        return <ForYouPage onOpenChat={() => setIsChatOpen(true)} />;
-      case "dashboard":
-        return <HealthcareDashboard onTakeAction={handleTakeAction} />;
-      case "signals":
+    switch (surface) {
+      case "leadership":
+        switch (subPage) {
+          case "briefing":
+            return <ForYouPage onOpenChat={() => setIsChatOpen(true)} />;
+          case "dashboard":
+            return <HealthcareDashboard onTakeAction={handleTakeAction} />;
+          case "signals":
+            return (
+              <InsightsAlertsPage 
+                highlightedInitiativeId={highlightedAlertId}
+                onClearHighlight={handleClearHighlight}
+              />
+            );
+          case "reports":
+            return <ReportsPage />;
+          default:
+            return <ForYouPage onOpenChat={() => setIsChatOpen(true)} />;
+        }
+      
+      case "clinician":
+        // Phase 3 placeholder — will be replaced with ClinicianPanel
         return (
-          <InsightsAlertsPage 
-            highlightedInitiativeId={highlightedAlertId}
-            onClearHighlight={handleClearHighlight}
-          />
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'text.secondary' }}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="h5" sx={{ mb: 1 }}>
+                Clinician Panel — {subPage === 'nursing' ? 'Nursing Handoff' : 'Pharmacy Alerts'}
+              </Typography>
+              <Typography variant="body2">Coming in Phase 3</Typography>
+            </Box>
+          </Box>
         );
-      case "reports":
-        return <ReportsPage />;
+      
+      case "governance":
+        // Phase 4 placeholder — will be replaced with GovernancePage
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'text.secondary' }}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="h5" sx={{ mb: 1 }}>
+                Governance — {
+                  subPage === 'audit' ? 'Audit Log' :
+                  subPage === 'rbac' ? 'Access Control' :
+                  subPage === 'allowlists' ? 'Allowlists & Templates' :
+                  'Use Case Registry'
+                }
+              </Typography>
+              <Typography variant="body2">Coming in Phase 4</Typography>
+            </Box>
+          </Box>
+        );
+      
       case "settings":
         return <SettingsPage />;
-      case "clinician":
-        return (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'text.secondary' }}>
-            <Typography variant="h5">Clinician Panel — Coming in Phase 3</Typography>
-          </Box>
-        );
-      case "governance":
-        return (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'text.secondary' }}>
-            <Typography variant="h5">Governance Control Plane — Coming in Phase 4</Typography>
-          </Box>
-        );
+      
       case "dev-panel":
         return <DevPanelPage />;
+      
       default:
-        return <ForYouPage onOpenChat={() => setIsChatOpen(true)} />;
+        return null;
     }
   };
-
-  const getPageTitle = () => {
-    const titles: Record<Page, string> = {
-      home: "AI Briefing",
-      dashboard: "Outcomes Dashboard",
-      signals: "Signals & Incidents",
-      reports: "Reports",
-      settings: "Settings",
-      clinician: "Clinician Panel",
-      governance: "Governance",
-      "dev-panel": "Dev Panel",
-    };
-    return titles[activePage];
-  };
-
-  // Calculate sidebar width for margin (used for layout calculations)
-  const _sidebarWidth = isSidebarHidden 
-    ? 0 
-    : isSidebarCollapsed 
-      ? SIDEBAR_COLLAPSED_WIDTH 
-      : SIDEBAR_WIDTH;
-  void _sidebarWidth; // Suppress unused variable warning
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar */}
       <AppSidebar
-        activeItem={activePage}
+        surface={surface}
+        activeSubPage={subPage}
         onNavigate={handleNavigate}
         isHidden={isSidebarHidden}
         onToggleHidden={() => setIsSidebarHidden(!isSidebarHidden)}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapsed={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        showExperimentalForYou={prefs.showForYou}
         showDevPanel={prefs.showDevPanel}
       />
 
@@ -304,7 +338,7 @@ export function AppShell() {
                 variant="h6"
                 sx={{ fontWeight: 600, color: "text.primary" }}
               >
-                {getPageTitle()}
+                {getPageTitle(surface, subPage)}
               </Typography>
               <Chip
                 label={`${persona.name} · ${persona.department === 'pharmacy' ? 'Pharmacy' : 'Nursing'}`}
@@ -315,7 +349,6 @@ export function AppShell() {
             </Box>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              {/* Ask AI Button */}
               <AskAIButton onClick={() => setIsChatOpen(true)} />
             </Box>
           </Toolbar>

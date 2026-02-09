@@ -45,7 +45,7 @@ export const PERSONAS: Persona[] = [
     department: 'pharmacy', // sees all departments
     role: 'ops_leader',
     description: 'Oversees clinical AI program. Reports to CMO/COO on outcomes and ROI.',
-    defaultRoute: '/',
+    defaultRoute: '/leadership',
     avatar: 'VC',
   },
   {

@@ -1,8 +1,13 @@
 /**
- * App Sidebar - Sleek left navigation using Material UI
- * Simplified navigation: Dashboard, Insights & Alerts, Reports
- * Fully collapsible with expand affordance
- * Profile popup with theme switcher and settings link
+ * App Sidebar - Surface-aware navigation
+ * 
+ * Shows different nav items depending on which surface you're in:
+ * - Leadership: Briefing, Dashboard, Signals, Reports
+ * - Clinician: Pharmacy, Nursing
+ * - Governance: Registry, Audit, RBAC, Allowlists
+ * 
+ * Always shows: Home (back to demo index), Settings
+ * Includes persona switcher and profile/theme controls.
  */
 
 import { useState } from "react";
@@ -39,11 +44,18 @@ import {
   Shield,
   NotificationsActive,
   Home,
+  MedicalServices,
+  SwapHoriz,
+  Gavel,
+  Security,
+  ListAlt,
+  FactCheck,
 } from "@mui/icons-material";
 import { useTheme, type Theme } from "../../context/ThemeContext";
 import { usePersona } from "../../context/PersonaContext";
 import { customColors } from "../../theme/muiTheme";
 import { PersonaSwitcher } from "../PersonaSwitcher";
+import type { Surface } from "./AppShell";
 
 /**
  * Get user initials from display name
@@ -51,7 +63,6 @@ import { PersonaSwitcher } from "../PersonaSwitcher";
 function getInitials(displayName: string | undefined): string {
   if (!displayName) return '?';
   
-  // Handle "Last, First (CTR)" format
   const withoutSuffix = displayName.replace(/\s*\([^)]*\)\s*$/, '').trim();
   
   if (withoutSuffix.includes(',')) {
@@ -59,7 +70,6 @@ function getInitials(displayName: string | undefined): string {
     return `${first?.[0] || ''}${last?.[0] || ''}`.toUpperCase();
   }
   
-  // Handle "First Last" format
   const parts = withoutSuffix.split(/\s+/);
   if (parts.length >= 2) {
     return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
@@ -71,34 +81,84 @@ function getInitials(displayName: string | undefined): string {
 const SIDEBAR_WIDTH = 260;
 const SIDEBAR_COLLAPSED_WIDTH = 72;
 
-export interface NavItem {
+interface NavItem {
   id: string;
   label: string;
   icon: React.ReactNode;
+  path: string;
   badge?: number | string;
   badgeColor?: "success" | "warning" | "error" | "info";
 }
 
 interface AppSidebarProps {
-  activeItem: string;
-  onNavigate: (id: string) => void;
+  surface: Surface;
+  activeSubPage: string;
+  onNavigate: (path: string) => void;
   isHidden?: boolean;
   onToggleHidden?: () => void;
   isCollapsed?: boolean;
   onToggleCollapsed?: () => void;
-  /** @deprecated For You is always shown now */
-  showExperimentalForYou?: boolean;
   showDevPanel?: boolean;
 }
 
+// ─── Surface-specific navigation items ────────────────────────
+
+const LEADERSHIP_NAV: NavItem[] = [
+  { id: "briefing", label: "AI Briefing", icon: <AutoAwesome />, path: "/leadership" },
+  { id: "dashboard", label: "Outcomes Dashboard", icon: <Dashboard />, path: "/leadership/dashboard" },
+  { id: "signals", label: "Signals & Incidents", icon: <NotificationsActive />, path: "/leadership/signals" },
+  { id: "reports", label: "Reports", icon: <Description />, path: "/leadership/reports" },
+];
+
+const CLINICIAN_NAV: NavItem[] = [
+  { id: "pharmacy", label: "Pharmacy Alerts", icon: <MedicalServices />, path: "/clinician/pharmacy" },
+  { id: "nursing", label: "Nursing Handoff", icon: <SwapHoriz />, path: "/clinician/nursing" },
+];
+
+const GOVERNANCE_NAV: NavItem[] = [
+  { id: "registry", label: "Use Case Registry", icon: <ListAlt />, path: "/governance" },
+  { id: "audit", label: "Audit Log", icon: <FactCheck />, path: "/governance/audit" },
+  { id: "rbac", label: "Access Control", icon: <Security />, path: "/governance/rbac" },
+  { id: "allowlists", label: "Allowlists", icon: <Gavel />, path: "/governance/allowlists" },
+];
+
+function getNavItems(surface: Surface): NavItem[] {
+  switch (surface) {
+    case "leadership": return LEADERSHIP_NAV;
+    case "clinician": return CLINICIAN_NAV;
+    case "governance": return GOVERNANCE_NAV;
+    default: return [];
+  }
+}
+
+function getSurfaceLabel(surface: Surface): string {
+  switch (surface) {
+    case "leadership": return "Leadership Dashboard";
+    case "clinician": return "Clinician Panel";
+    case "governance": return "Governance";
+    default: return "ClinicalOS";
+  }
+}
+
+function getSurfaceIcon(surface: Surface): React.ReactNode {
+  switch (surface) {
+    case "leadership": return <Dashboard sx={{ fontSize: 18 }} />;
+    case "clinician": return <LocalHospital sx={{ fontSize: 18 }} />;
+    case "governance": return <Shield sx={{ fontSize: 18 }} />;
+    default: return null;
+  }
+}
+
+// ─── Main Sidebar Component ──────────────────────────────────
+
 export function AppSidebar({ 
-  activeItem, 
+  surface,
+  activeSubPage, 
   onNavigate, 
   isHidden = false,
   onToggleHidden,
   isCollapsed = false,
   onToggleCollapsed,
-  // showExperimentalForYou is deprecated - For You is always shown
   showDevPanel = false,
 }: AppSidebarProps) {
   const { theme, setTheme, resolvedTheme } = useTheme();
@@ -123,56 +183,17 @@ export function AppSidebar({
   
   const handleSettingsClick = () => {
     handleProfileMenuClose();
-    onNavigate("settings");
+    onNavigate("/settings");
   };
   
   // User info from persona context
   const displayName = persona.name;
   const userInitials = persona.avatar;
   const userRole = persona.title;
-  
-  // Healthcare navigation items
-  const navItems: NavItem[] = [
-    {
-      id: "home",
-      label: "AI Briefing",
-      icon: <Home />,
-    },
-    {
-      id: "dashboard",
-      label: "Outcomes Dashboard",
-      icon: <Dashboard />,
-    },
-    {
-      id: "signals",
-      label: "Signals & Incidents",
-      icon: <NotificationsActive />,
-    },
-    {
-      id: "reports",
-      label: "Reports",
-      icon: <Description />,
-    },
-    {
-      id: "clinician",
-      label: "Clinician Panel",
-      icon: <LocalHospital />,
-    },
-    {
-      id: "governance",
-      label: "Governance",
-      icon: <Shield />,
-    },
-    // Conditionally add "Dev Panel" if experimental flag is enabled
-    ...(showDevPanel ? [{
-      id: "dev-panel",
-      label: "Dev Panel",
-      icon: <Code />,
-      badge: "Dev" as string | number,
-      badgeColor: "warning" as const,
-    }] : []),
-  ];
 
+  // Navigation items for current surface
+  const navItems = getNavItems(surface);
+  
   const isDark = resolvedTheme === "dark";
 
   // When fully hidden, show only an expand button
@@ -207,7 +228,7 @@ export function AppSidebar({
 
   return (
     <>
-      {/* Collapse/Expand Tab - sticks out from center edge */}
+      {/* Collapse/Expand Tab */}
       <Tooltip title={collapsed ? "Expand sidebar" : "Collapse sidebar"} placement="right">
         <IconButton
           onClick={onToggleCollapsed}
@@ -250,114 +271,24 @@ export function AppSidebar({
           },
         }}
       >
-        {/* Logo Section */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: collapsed ? "center" : "flex-start",
-          p: 2,
-          minHeight: 64,
-          gap: 1.5,
-        }}
-      >
-        <Avatar
-          sx={{
-            width: 36,
-            height: 36,
-            bgcolor: isDark 
-              ? `linear-gradient(135deg, ${customColors.accent.primary}, ${customColors.accent.cyan})`
-              : "rgba(255, 255, 255, 0.2)",
-            background: isDark 
-              ? `linear-gradient(135deg, ${customColors.accent.primary}, ${customColors.accent.cyan})`
-              : "rgba(255, 255, 255, 0.2)",
-            fontWeight: 700,
-            fontSize: "1.1rem",
-          }}
-        >
-          C
-        </Avatar>
-        {!collapsed && (
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                color: isDark ? "text.primary" : "#fff",
-                lineHeight: 1.2,
-                fontSize: "1.1rem",
-              }}
-            >
-              ClinicalOS
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{
-                color: isDark ? "text.secondary" : "rgba(255, 255, 255, 0.6)",
-              }}
-            >
-              Clinical AI Governance
-            </Typography>
-          </Box>
-        )}
-      </Box>
-
-      <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
-
-      {/* Navigation */}
-      <List sx={{ flex: 1, px: 1, py: 1 }}>
-        {navItems.map((item) => (
-          <NavButton
-            key={item.id}
-            item={item}
-            active={activeItem === item.id}
-            collapsed={collapsed}
-            isDark={isDark}
-            onClick={() => onNavigate(item.id)}
-          />
-        ))}
-      </List>
-
-      {/* Persona Switcher (compact, in sidebar) */}
-      {!collapsed && (
-        <>
-          <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
-          <Box sx={{ 
-            color: isDark ? "text.primary" : "#fff",
-            '& .MuiChip-root': {
-              color: isDark ? undefined : 'rgba(255,255,255,0.9)',
-              borderColor: isDark ? undefined : 'rgba(255,255,255,0.3)',
-            },
-            '& .MuiAvatar-root': {
-              bgcolor: isDark ? undefined : 'rgba(255,255,255,0.2)',
-              color: isDark ? undefined : '#fff',
-            },
-          }}>
-            <PersonaSwitcher compact />
-          </Box>
-        </>
-      )}
-
-      {/* Bottom Section - Profile with popup menu */}
-      <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
-      <Box sx={{ p: 1 }}>
-        {/* User Profile - Clickable with popup menu */}
-        <Tooltip title={collapsed ? displayName : ""} placement="right">
+        {/* Logo — click to go home */}
+        <Tooltip title={collapsed ? "Back to ClinicalOS Home" : ""} placement="right">
           <Box
-            onClick={handleProfileClick}
+            onClick={() => onNavigate("/")}
             sx={{
               display: "flex",
               alignItems: "center",
+              justifyContent: collapsed ? "center" : "flex-start",
+              p: 2,
+              minHeight: 64,
               gap: 1.5,
-              p: 1,
-              borderRadius: 2,
               cursor: "pointer",
-              bgcolor: profileMenuOpen 
-                ? (isDark ? "action.selected" : "rgba(255, 255, 255, 0.15)")
-                : "transparent",
               "&:hover": {
                 bgcolor: isDark ? "action.hover" : "rgba(255, 255, 255, 0.1)",
               },
+              borderRadius: 1,
+              mx: 0.5,
+              mt: 0.5,
             }}
           >
             <Avatar
@@ -365,140 +296,286 @@ export function AppSidebar({
                 width: 36,
                 height: 36,
                 bgcolor: isDark 
-                  ? `${customColors.accent.primary}20`
+                  ? `linear-gradient(135deg, ${customColors.accent.primary}, ${customColors.accent.cyan})`
                   : "rgba(255, 255, 255, 0.2)",
-                color: isDark ? customColors.accent.primary : "#fff",
-                fontSize: "0.9rem",
-                fontWeight: 500,
+                background: isDark 
+                  ? `linear-gradient(135deg, ${customColors.accent.primary}, ${customColors.accent.cyan})`
+                  : "rgba(255, 255, 255, 0.2)",
+                fontWeight: 700,
+                fontSize: "1.1rem",
               }}
             >
-              {userInitials}
+              C
             </Avatar>
             {!collapsed && (
               <Box sx={{ flex: 1, minWidth: 0 }}>
                 <Typography
-                  variant="body2"
+                  variant="h6"
                   sx={{
-                    fontWeight: 500,
+                    fontWeight: 600,
                     color: isDark ? "text.primary" : "#fff",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
+                    lineHeight: 1.2,
+                    fontSize: "1.1rem",
                   }}
                 >
-                  {displayName}
+                  ClinicalOS
                 </Typography>
                 <Typography
                   variant="caption"
                   sx={{
                     color: isDark ? "text.secondary" : "rgba(255, 255, 255, 0.6)",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    display: "block",
                   }}
                 >
-                  {userRole}
+                  Clinical AI Governance
                 </Typography>
               </Box>
             )}
           </Box>
         </Tooltip>
 
-        {/* Profile Popup Menu */}
-        <Menu
-          anchorEl={profileMenuAnchor}
-          open={profileMenuOpen}
-          onClose={handleProfileMenuClose}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          transformOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-          slotProps={{
-            paper: {
-              sx: {
-                minWidth: 200,
-                mt: -1,
-                ml: 1,
-              },
-            },
-          }}
-        >
-          {/* Theme Selection */}
-          <Box sx={{ px: 2, py: 1 }}>
-            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5 }}>
-              Theme
-            </Typography>
-            <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-              <Tooltip title="Light">
-                <IconButton
-                  size="small"
-                  onClick={() => handleThemeSelect("light")}
-                  sx={{
-                    bgcolor: theme === "light" ? "primary.main" : "action.hover",
-                    color: theme === "light" ? "primary.contrastText" : "text.secondary",
-                    "&:hover": {
-                      bgcolor: theme === "light" ? "primary.dark" : "action.selected",
-                    },
-                  }}
-                >
-                  <LightMode fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Dark">
-                <IconButton
-                  size="small"
-                  onClick={() => handleThemeSelect("dark")}
-                  sx={{
-                    bgcolor: theme === "dark" ? "primary.main" : "action.hover",
-                    color: theme === "dark" ? "primary.contrastText" : "text.secondary",
-                    "&:hover": {
-                      bgcolor: theme === "dark" ? "primary.dark" : "action.selected",
-                    },
-                  }}
-                >
-                  <DarkMode fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="System">
-                <IconButton
-                  size="small"
-                  onClick={() => handleThemeSelect("system")}
-                  sx={{
-                    bgcolor: theme === "system" ? "primary.main" : "action.hover",
-                    color: theme === "system" ? "primary.contrastText" : "text.secondary",
-                    "&:hover": {
-                      bgcolor: theme === "system" ? "primary.dark" : "action.selected",
-                    },
-                  }}
-                >
-                  <Computer fontSize="small" />
-                </IconButton>
-              </Tooltip>
+        <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
+
+        {/* Surface indicator */}
+        {!collapsed && (
+          <Box sx={{ px: 2, py: 1.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ color: isDark ? 'text.secondary' : 'rgba(255,255,255,0.6)' }}>
+                {getSurfaceIcon(surface)}
+              </Box>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  color: isDark ? 'text.secondary' : 'rgba(255,255,255,0.6)',
+                  fontSize: '0.65rem',
+                }}
+              >
+                {getSurfaceLabel(surface)}
+              </Typography>
             </Box>
           </Box>
-          
-          <Divider sx={{ my: 1 }} />
-          
-          {/* Settings Link */}
-          <MenuItem onClick={handleSettingsClick}>
-            <ListItemIcon>
-              <Settings fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Settings" />
-          </MenuItem>
-        </Menu>
-      </Box>
-    </Drawer>
+        )}
+
+        {/* Surface Navigation */}
+        <List sx={{ flex: 1, px: 1, py: 0.5 }}>
+          {navItems.map((item) => (
+            <NavButton
+              key={item.id}
+              item={item}
+              active={activeSubPage === item.id}
+              collapsed={collapsed}
+              isDark={isDark}
+              onClick={() => onNavigate(item.path)}
+            />
+          ))}
+
+          {/* Dev Panel (if enabled) */}
+          {showDevPanel && (
+            <NavButton
+              item={{ id: "dev-panel", label: "Dev Panel", icon: <Code />, path: "/dev-panel", badge: "Dev", badgeColor: "warning" }}
+              active={surface === "dev-panel"}
+              collapsed={collapsed}
+              isDark={isDark}
+              onClick={() => onNavigate("/dev-panel")}
+            />
+          )}
+        </List>
+
+        {/* Persona Switcher (compact, in sidebar) */}
+        {!collapsed && (
+          <>
+            <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
+            <Box sx={{ 
+              color: isDark ? "text.primary" : "#fff",
+              '& .MuiChip-root': {
+                color: isDark ? undefined : 'rgba(255,255,255,0.9)',
+                borderColor: isDark ? undefined : 'rgba(255,255,255,0.3)',
+              },
+              '& .MuiAvatar-root': {
+                bgcolor: isDark ? undefined : 'rgba(255,255,255,0.2)',
+                color: isDark ? undefined : '#fff',
+              },
+            }}>
+              <PersonaSwitcher compact />
+            </Box>
+          </>
+        )}
+
+        {/* Settings link */}
+        <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
+        <List sx={{ px: 1, py: 0.5 }}>
+          <NavButton
+            item={{ id: "settings", label: "Settings", icon: <Settings />, path: "/settings" }}
+            active={surface === "settings"}
+            collapsed={collapsed}
+            isDark={isDark}
+            onClick={() => onNavigate("/settings")}
+          />
+        </List>
+
+        {/* Bottom Section - Profile with popup menu */}
+        <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
+        <Box sx={{ p: 1 }}>
+          <Tooltip title={collapsed ? displayName : ""} placement="right">
+            <Box
+              onClick={handleProfileClick}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                p: 1,
+                borderRadius: 2,
+                cursor: "pointer",
+                bgcolor: profileMenuOpen 
+                  ? (isDark ? "action.selected" : "rgba(255, 255, 255, 0.15)")
+                  : "transparent",
+                "&:hover": {
+                  bgcolor: isDark ? "action.hover" : "rgba(255, 255, 255, 0.1)",
+                },
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: 36,
+                  height: 36,
+                  bgcolor: isDark 
+                    ? `${customColors.accent.primary}20`
+                    : "rgba(255, 255, 255, 0.2)",
+                  color: isDark ? customColors.accent.primary : "#fff",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                }}
+              >
+                {userInitials}
+              </Avatar>
+              {!collapsed && (
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 500,
+                      color: isDark ? "text.primary" : "#fff",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {displayName}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: isDark ? "text.secondary" : "rgba(255, 255, 255, 0.6)",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      display: "block",
+                    }}
+                  >
+                    {userRole}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Tooltip>
+
+          {/* Profile Popup Menu */}
+          <Menu
+            anchorEl={profileMenuAnchor}
+            open={profileMenuOpen}
+            onClose={handleProfileMenuClose}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            slotProps={{
+              paper: {
+                sx: {
+                  minWidth: 200,
+                  mt: -1,
+                  ml: 1,
+                },
+              },
+            }}
+          >
+            {/* Theme Selection */}
+            <Box sx={{ px: 2, py: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                Theme
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+                <Tooltip title="Light">
+                  <IconButton
+                    size="small"
+                    onClick={() => handleThemeSelect("light")}
+                    sx={{
+                      bgcolor: theme === "light" ? "primary.main" : "action.hover",
+                      color: theme === "light" ? "primary.contrastText" : "text.secondary",
+                      "&:hover": {
+                        bgcolor: theme === "light" ? "primary.dark" : "action.selected",
+                      },
+                    }}
+                  >
+                    <LightMode fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Dark">
+                  <IconButton
+                    size="small"
+                    onClick={() => handleThemeSelect("dark")}
+                    sx={{
+                      bgcolor: theme === "dark" ? "primary.main" : "action.hover",
+                      color: theme === "dark" ? "primary.contrastText" : "text.secondary",
+                      "&:hover": {
+                        bgcolor: theme === "dark" ? "primary.dark" : "action.selected",
+                      },
+                    }}
+                  >
+                    <DarkMode fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="System">
+                  <IconButton
+                    size="small"
+                    onClick={() => handleThemeSelect("system")}
+                    sx={{
+                      bgcolor: theme === "system" ? "primary.main" : "action.hover",
+                      color: theme === "system" ? "primary.contrastText" : "text.secondary",
+                      "&:hover": {
+                        bgcolor: theme === "system" ? "primary.dark" : "action.selected",
+                      },
+                    }}
+                  >
+                    <Computer fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Box>
+            
+            <Divider sx={{ my: 1 }} />
+            
+            {/* Settings Link */}
+            <MenuItem onClick={handleSettingsClick}>
+              <ListItemIcon>
+                <Settings fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Settings" />
+            </MenuItem>
+          </Menu>
+        </Box>
+      </Drawer>
     </>
   );
 }
 
-// Nav Button Component
+// ─── Nav Button Component ─────────────────────────────────────
+
 interface NavButtonProps {
   item: NavItem;
   active: boolean;
