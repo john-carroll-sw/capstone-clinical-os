@@ -1,0 +1,46 @@
+---
+description: ClinicalOS Design Principle enforcement — the "soul" of the product
+apply_when: always
+priority: 20
+---
+
+# ClinicalOS Design Principles
+
+> **Soul reference:** See `docs/foundations/SOUL.md` for ClinicalOS's agent identity — who we are, how we behave, what we never do. This rule enforces the soul in every feature.
+
+> "Surveillance erodes trust. ClinicalOS builds it through mutual visibility."
+
+## The Seven Principles
+
+1. **Remove Burden Before Adding Value** — Earn the right to ask by eliminating existing obligations first
+2. **Show the Loop Closing** — When someone raises a signal, they must see what happened
+3. **Celebrate Progress, Not Just Problems** — Wins get equal prominence to risks
+4. **Context Over Data** — Provide the "why" alongside the "what"
+5. **Appropriate Visibility** — Different personas see different views of the same truth
+6. **Earn Trust Through Action** — Value is proven by outcomes, not mandated by policy
+7. **Human-Centered, AI-Augmented** — AI enhances human judgment; it doesn't replace it
+
+## Design Checklist (Apply to Every Feature)
+
+| Question | Expected Answer |
+|----------|-----------------|
+| Does this remove burden or add it? | Remove (or neutral with clear value exchange) |
+| Who sees this? Do they get equal value? | All affected personas get appropriate value |
+| Does this close a loop? | Yes — input → visible outcome |
+| Does this show context or just data? | Context first, data supports |
+| Would teams choose to use this? | Yes — opt-in viable |
+| Does AI augment or replace humans? | Augment — humans decide |
+| Does this empower the person in front of you? | Always — primary soul test |
+| Does it pass the voluntary use test? | Yes — teams would use this even if leadership never saw the output |
+
+## What ClinicalOS Will NEVER Do
+
+1. **Never create one-way surveillance** — If leadership sees it, teams must get value
+2. **Never add burden without removing more** — Net burden must decrease
+3. **Never hide the loop** — Escalations must have visible outcomes
+4. **Never mandate before proving** — Adoption must be earned
+5. **Never let AI decide for humans** — In high-stakes domains, AI advises
+
+## Reference
+
+Full principles: `docs/foundations/Design_Principles.md`

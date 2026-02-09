@@ -1,0 +1,53 @@
+---
+description: Strategic alignment validation and consistency checks
+apply_when: always
+priority: 30
+---
+
+# Consistency & Strategic Alignment
+
+## Before Completing ANY Task
+
+### Strategic Alignment
+- [ ] Does this advance ClinicalOS's core mission? (Healthcare AI governance)
+- [ ] Is alignment noted? (`**Alignment:** ClinicalOS mission — governance improvement`)
+- [ ] Does this support responsible AI deployment?
+- [ ] Does it follow "Remove Burden Before Adding Value"?
+
+### Design Principles
+- [ ] Does this remove burden or add it?
+- [ ] Does this provide bidirectional value?
+- [ ] Does this close a loop? (escalations → visible outcomes)
+- [ ] Does this show context, not just data?
+
+### Content Consistency
+- [ ] Does terminology match? ("ClinicalOS" = healthcare AI governance platform)
+- [ ] Are cross-references valid?
+- [ ] If creating a spec, does it follow docs/specs/_template.md?
+
+## When You Spot Misalignment
+
+Surface it explicitly:
+
+```
+I noticed this work may not clearly align with ClinicalOS's mission:
+- Current P0 focus: Core governance features, AI monitoring
+- This feature seems adjacent to current priorities
+
+Does this advance ClinicalOS's core mission? Should we proceed, or prioritize current P0 work?
+```
+
+## What to Avoid
+
+### Don't
+- Create features without ClinicalOS mission alignment
+- Add burden without removing more
+- Create one-way surveillance (Leadership sees, Teams don't benefit)
+- Hide the loop (escalations vanish into silence)
+- Skip the "why" when explaining the "what"
+
+### Do
+- Reference ClinicalOS mission explicitly in specs and PRs
+- Apply Design Principles checklist
+- Ask clarifying questions about alignment
+- Validate against current sprint priorities

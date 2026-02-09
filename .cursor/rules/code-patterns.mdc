@@ -1,0 +1,72 @@
+---
+description: Development conventions and code patterns for ClinicalOS
+apply_when: always
+priority: 50
+---
+
+# Code Patterns for ClinicalOS
+
+## API Design
+
+- All responses include context, not just data
+- Error messages include "why" and "how to resolve"
+- Use consistent response envelope patterns
+- Include metadata for debugging (timestamps, request IDs)
+
+## Component Design
+
+- Every view serves a specific persona: Leadership, Stakeholder, or Build Team
+- UI must reflect "Appropriate Visibility" principle
+- Components should be composable and reusable
+- Prefer configuration over code duplication
+
+## Data Model
+
+- Follow healthcare AI governance data structures
+- Status logic: Red > Amber > Green (worst child determines parent)
+- Aggregate progress = average attainment across children
+- Support multi-dimensional governance views
+
+## File Organization
+
+```
+frontend/src/
+├── components/
+│   ├── common/       # Reusable UI primitives
+│   ├── clinicalos/   # ClinicalOS-specific components
+│   └── layout/       # Page structure components
+├── pages/            # Route-level components
+├── hooks/            # Custom React hooks
+├── services/         # API and business logic
+├── types/            # TypeScript definitions
+└── utils/            # Pure utility functions
+```
+
+## Naming Conventions
+
+- Components: PascalCase (`OKRDashboard.tsx`)
+- Hooks: camelCase with `use` prefix (`useInitiatives.ts`)
+- Utils: camelCase (`calculateProgress.ts`)
+- Types: PascalCase (`Initiative.ts`)
+- Constants: SCREAMING_SNAKE_CASE
+
+## State Management
+
+- Local state for UI-only concerns
+- Context for cross-component shared state
+- Keep state as close to usage as possible
+- Avoid prop drilling beyond 2 levels
+
+## Testing Philosophy
+
+- Test behavior, not implementation
+- Focus on user-visible outcomes
+- Mock external dependencies
+- Integration tests for critical paths
+
+## Performance
+
+- Lazy load routes and heavy components
+- Memoize expensive calculations
+- Virtualize long lists
+- Optimize bundle size (tree shaking, code splitting)

@@ -1,0 +1,43 @@
+/**
+ * ClinicalOS Global Styles
+ * Clinical AI Governance & Decision Support
+ * 
+ * Using Material UI - minimal global styles needed
+ */
+
+/* Import custom fonts */
+@import './styles/fonts.css';
+
+/* Root element */
+#root {
+  min-height: 100vh;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: rgba(128, 128, 128, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.5);
+}
+
+/* Pulse animation for status indicators */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

@@ -1,0 +1,41 @@
+---
+description: Core context for ClinicalOS — strategic anchor and product context
+apply_when: always
+priority: 10
+---
+
+# ClinicalOS — Core Context
+
+## What ClinicalOS Is
+
+**Healthcare AI governance platform** — enables responsible AI deployment and oversight in clinical settings.
+
+**Core mission:** Provide governance, monitoring, and compliance tools for healthcare AI systems.
+
+## Strategic Alignment
+
+ClinicalOS is a healthcare AI governance platform for an Executive MBA capstone project focused on responsible AI deployment.
+
+## Current Focus
+
+**P0 Specs:**
+1. Core governance features — oversight and compliance
+2. AI monitoring capabilities — intelligence + burden reduction
+
+## When evaluating ANY work, ask:
+
+1. **Does this advance ClinicalOS's core mission?** (Healthcare AI governance)
+2. **Which ClinicalOS success metric does this advance?** (See PRD 2.4, if available)
+3. **Does it follow Design Principles?** (docs/foundations/Design_Principles.md)
+4. **Does it create bidirectional value?** (Leadership + Teams both benefit)
+
+**Read `docs/strategy/` for strategic context (Note: docs are being replaced/updated).**
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| docs/strategy/ | Strategic context (Note: being replaced/updated) |
+| docs/requirements/PRD_*.md | ClinicalOS success metrics (Section 2.4) (Note: being replaced/updated) |
+| docs/foundations/Design_Principles.md | The 7 principles (Note: being replaced/updated) |
+| docs/README.md | Feature dashboard (Note: being replaced/updated) |

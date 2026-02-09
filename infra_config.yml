@@ -1,0 +1,14 @@
+# ClinicalOS - Clinical AI Governance & Decision Support
+# Infrastructure configuration (genericized for capstone project)
+
+app_name: "clinicalos"
+
+# Tags (placeholder)
+tags:
+  Project: "ClinicalOS"
+  Environment: "development"
+
+# Note: Original infrastructure config contained corporate-specific
+# deployment configurations. This has been stripped for the capstone.
+# The app runs as a local-only frontend with mock data.
+# See frontend/README.md for local development setup.

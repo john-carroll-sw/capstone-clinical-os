@@ -1,0 +1,63 @@
+---
+description: Git workflow practices with KR alignment requirements
+apply_when: always
+priority: 40
+---
+
+# Git Workflow & KR Alignment
+
+## Branch Naming
+
+Branches should reference the spec or work item:
+- `feature/008-sbu-dimension`
+- `feature/016-auto-tagging`
+- `fix/dashboard-performance`
+
+## Commit Messages
+
+Include parent OKR alignment in commits when meaningful:
+
+```
+feat(008): Add SBU filter to initiative list
+
+Alignment: Obj 4 KR3 — reduces time to answer "what are we doing for PBS?"
+```
+
+For smaller commits, alignment can be omitted but should be in the PR.
+
+## Pull Requests
+
+PRs MUST include:
+
+1. **Summary** — What changed and why
+2. **Parent OKR Alignment** — Which parent objective this advances
+3. **Success Metric Impact** — Which PRD 2.4 metric this helps prove
+
+Example PR template:
+
+```markdown
+## Summary
+[1-2 sentences on what changed]
+
+## Strategic Alignment
+- **Parent OKR:** Obj 4 KR3 (Delivery velocity +80%)
+- **Success Metric:** Time-to-portfolio-status <30 sec
+
+## Test Plan
+- [ ] Verified locally
+- [ ] Design principles checklist passed
+```
+
+## Before Merging
+
+- [ ] PR has parent OKR alignment documented
+- [ ] Code passes linting/tests
+- [ ] Design principles checklist reviewed
+- [ ] No burden added without burden removed
+
+## Git Practices
+
+- Short-lived branches (1-2 days ideal)
+- Atomic commits — one logical change per commit
+- Frequent sync with main — rebase before merge
+- PR everything — no direct commits to main

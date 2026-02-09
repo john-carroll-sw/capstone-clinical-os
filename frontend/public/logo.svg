@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4af37"/>
+      <stop offset="100%" style="stop-color:#a68a2b"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#gold-gradient)"/>
+  <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" 
+        font-family="Georgia, serif" font-size="36" font-weight="600" fill="#0a0e14">
+    T
+  </text>
+</svg>
+
