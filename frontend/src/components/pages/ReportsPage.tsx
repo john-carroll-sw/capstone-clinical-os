@@ -183,7 +183,7 @@ export function ReportsPage() {
               </Typography>
             </Box>
             <Typography variant="body2" color="text.secondary">
-              {AI_INSIGHTS[0]?.summary || "Portfolio performing at 92% attainment with positive momentum."}
+              {AI_INSIGHTS[0]?.summary || "Clinical AI program performing at 92% attainment with positive momentum."}
             </Typography>
             <Typography variant="body2" sx={{ mt: 1 }}>
               <Box component="span" sx={{ fontWeight: 600, color: customColors.accent.cyan }}>
