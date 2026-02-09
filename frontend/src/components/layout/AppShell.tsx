@@ -6,7 +6,7 @@
  * /leadership/*            → Leadership Dashboard surface
  * /clinician/*             → Clinician Panel surface
  * /governance/*            → Governance Control Plane surface
- * /settings                → Settings (shared)
+ * /{surface}/settings       → Settings (within current surface)
  */
 
 import { useState, useEffect } from "react";
@@ -41,10 +41,11 @@ import { InsightsAlertsPage } from "../pages/InsightsAlertsPage";
 import { ReportsPage } from "../pages/ReportsPage";
 import { SettingsPage } from "../pages/SettingsPage";
 import { DevPanelPage } from "../pages/DevPanelPage";
+import { ClinicianPanel } from "../clinician/ClinicianPanel";
 
 // ─── Route → Surface mapping ──────────────────────────────────
 
-export type Surface = "index" | "leadership" | "clinician" | "governance" | "settings" | "dev-panel";
+export type Surface = "index" | "leadership" | "clinician" | "governance" | "dev-panel";
 
 export type LeadershipPage = "briefing" | "dashboard" | "signals" | "reports";
 export type ClinicianPage = "pharmacy" | "nursing";
@@ -56,7 +57,6 @@ function getSurface(pathname: string): Surface {
   if (pathname.startsWith("/leadership")) return "leadership";
   if (pathname.startsWith("/clinician")) return "clinician";
   if (pathname.startsWith("/governance")) return "governance";
-  if (pathname.startsWith("/settings")) return "settings";
   if (pathname.startsWith("/dev-panel")) return "dev-panel";
   return "index";
 }
@@ -76,11 +76,14 @@ function getSubPage(pathname: string): string {
   if (pathname === "/governance/audit") return "audit";
   if (pathname === "/governance/rbac") return "rbac";
   if (pathname === "/governance/allowlists") return "allowlists";
+  // Settings is a sub-page within each surface
+  if (pathname.endsWith("/settings")) return "settings";
   return "";
 }
 
 /** Get human-readable page title */
 function getPageTitle(surface: Surface, subPage: string): string {
+  if (subPage === "settings") return "Settings";
   const titles: Record<string, Record<string, string>> = {
     leadership: {
       briefing: "AI Briefing",
@@ -159,14 +162,31 @@ const SIDEBAR_COLLAPSED_WIDTH = 72;
 
 // ─── App Shell ────────────────────────────────────────────────
 
+// Map surface to the expected persona role
+const SURFACE_TO_ROLE: Record<string, string> = {
+  leadership: 'ops_leader',
+  clinician: 'clinician',
+  governance: 'governance',
+};
+
 export function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { persona } = usePersona();
+  const { persona, setRoleQuiet } = usePersona();
   
   // Derive active surface and sub-page from URL
   const surface = getSurface(location.pathname);
   const subPage = getSubPage(location.pathname);
+
+  // Auto-sync persona role when surface changes (without navigating)
+  // e.g. navigating to /clinician should switch to a clinician persona
+  useEffect(() => {
+    const expectedRole = SURFACE_TO_ROLE[surface];
+    if (expectedRole && persona.role !== expectedRole) {
+      setRoleQuiet(expectedRole as any);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [surface]);
   
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [feedbackStyle, setFeedbackStyle] = useState<'quick' | 'guided'>('quick');
@@ -229,6 +249,11 @@ export function AppShell() {
 
   // ─── Render page content based on surface + sub-page ────────
   const renderPage = () => {
+    // Settings is shared across all surfaces
+    if (subPage === "settings") {
+      return <SettingsPage />;
+    }
+
     switch (surface) {
       case "leadership":
         switch (subPage) {
@@ -250,17 +275,7 @@ export function AppShell() {
         }
       
       case "clinician":
-        // Phase 3 placeholder — will be replaced with ClinicianPanel
-        return (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'text.secondary' }}>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h5" sx={{ mb: 1 }}>
-                Clinician Panel — {subPage === 'nursing' ? 'Nursing Handoff' : 'Pharmacy Alerts'}
-              </Typography>
-              <Typography variant="body2">Coming in Phase 3</Typography>
-            </Box>
-          </Box>
-        );
+        return <ClinicianPanel department={subPage === 'nursing' ? 'nursing' : 'pharmacy'} />;
       
       case "governance":
         // Phase 4 placeholder — will be replaced with GovernancePage
@@ -279,9 +294,6 @@ export function AppShell() {
             </Box>
           </Box>
         );
-      
-      case "settings":
-        return <SettingsPage />;
       
       case "dev-panel":
         return <DevPanelPage />;
@@ -348,9 +360,11 @@ export function AppShell() {
               />
             </Box>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <AskAIButton onClick={() => setIsChatOpen(true)} />
-            </Box>
+            {surface !== "clinician" && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <AskAIButton onClick={() => setIsChatOpen(true)} />
+              </Box>
+            )}
           </Toolbar>
         </AppBar>
 
@@ -360,11 +374,13 @@ export function AppShell() {
         </Box>
       </Box>
 
-      {/* AI Chat Panel */}
-      <AIChatPanel 
-        isOpen={isChatOpen} 
-        onClose={() => setIsChatOpen(false)}
-      />
+      {/* AI Chat Panel — not shown on clinician surface */}
+      {surface !== "clinician" && (
+        <AIChatPanel 
+          isOpen={isChatOpen} 
+          onClose={() => setIsChatOpen(false)}
+        />
+      )}
 
       {/* Feedback Widget */}
       <FeedbackWidget

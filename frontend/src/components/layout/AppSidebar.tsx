@@ -181,9 +181,11 @@ export function AppSidebar({
     setTheme(newTheme);
   };
   
+  const settingsPath = surface === "index" ? "/leadership/settings" : `/${surface}/settings`;
+
   const handleSettingsClick = () => {
     handleProfileMenuClose();
-    onNavigate("/settings");
+    onNavigate(settingsPath);
   };
   
   // User info from persona context
@@ -407,11 +409,11 @@ export function AppSidebar({
         <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
         <List sx={{ px: 1, py: 0.5 }}>
           <NavButton
-            item={{ id: "settings", label: "Settings", icon: <Settings />, path: "/settings" }}
-            active={surface === "settings"}
+            item={{ id: "settings", label: "Settings", icon: <Settings />, path: settingsPath }}
+            active={activeSubPage === "settings"}
             collapsed={collapsed}
             isDark={isDark}
-            onClick={() => onNavigate("/settings")}
+            onClick={() => onNavigate(settingsPath)}
           />
         </List>
 
