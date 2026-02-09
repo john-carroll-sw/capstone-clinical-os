@@ -391,6 +391,13 @@ export function AppSidebar({
             <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
             <Box sx={{ 
               color: isDark ? "text.primary" : "#fff",
+              '& .MuiTypography-root': {
+                color: isDark ? undefined : 'rgba(255,255,255,0.85)',
+              },
+              '& .MuiTypography-root:first-of-type': {
+                color: isDark ? undefined : '#fff',
+                fontWeight: isDark ? undefined : 600,
+              },
               '& .MuiChip-root': {
                 color: isDark ? undefined : 'rgba(255,255,255,0.9)',
                 borderColor: isDark ? undefined : 'rgba(255,255,255,0.3)',
@@ -469,7 +476,7 @@ export function AppSidebar({
                   <Typography
                     variant="caption"
                     sx={{
-                      color: isDark ? "text.secondary" : "rgba(255, 255, 255, 0.6)",
+                      color: isDark ? "text.secondary" : "rgba(255, 255, 255, 0.85)",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
