@@ -28,7 +28,7 @@ import {
   CircularProgress,
   Fade,
 } from '@mui/material';
-import { Warning, FiberManualRecord, Send, AutoAwesome } from '@mui/icons-material';
+import { Warning, FiberManualRecord, Send, AutoAwesome, RestartAlt } from '@mui/icons-material';
 import ReactMarkdown from 'react-markdown';
 import { customColors } from '../../theme/muiTheme';
 import { useTheme } from '../../context/ThemeContext';
@@ -254,8 +254,17 @@ function InlineAIAssistant({ department }: InlineAIAssistantProps) {
     ? Object.keys(CLINICIAN_PHARMACY_MOCK_RESPONSES)
     : Object.keys(CLINICIAN_NURSING_MOCK_RESPONSES);
 
+  const hasMessages = messages.length > 0;
+
   const scrollToBottom = useCallback(() => {
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+  }, []);
+
+  const handleRestart = useCallback(() => {
+    setMessages([]);
+    setInput('');
+    setIsLoading(false);
+    inputRef.current?.focus();
   }, []);
 
   const submitQuery = useCallback(async (query: string) => {
@@ -296,12 +305,44 @@ function InlineAIAssistant({ department }: InlineAIAssistantProps) {
         borderColor: 'divider',
         display: 'flex',
         flexDirection: 'column',
-        maxHeight: messages.length > 0 ? 320 : 'auto',
+        maxHeight: hasMessages ? 320 : 'auto',
         bgcolor: isDark ? customColors.dark.surface : '#f8fafc',
       }}
     >
-      {/* Messages area — only visible when there are messages */}
-      {messages.length > 0 && (
+      {/* Chat header — visible when conversation is active */}
+      {hasMessages && (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            px: 1.5,
+            py: 0.5,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+          }}
+        >
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.65rem' }}>
+            {messages.filter(m => m.role === 'assistant').length} response{messages.filter(m => m.role === 'assistant').length !== 1 ? 's' : ''}
+          </Typography>
+          <Chip
+            icon={<RestartAlt sx={{ fontSize: '14px !important' }} />}
+            label="New chat"
+            size="small"
+            variant="outlined"
+            onClick={handleRestart}
+            sx={{
+              fontSize: '0.65rem',
+              height: 22,
+              cursor: 'pointer',
+              '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
+            }}
+          />
+        </Box>
+      )}
+
+      {/* Messages area */}
+      {hasMessages && (
         <Box sx={{ flex: 1, overflow: 'auto', px: 1.5, py: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
           {messages.map(msg => (
             <Fade in key={msg.id}>
@@ -347,26 +388,36 @@ function InlineAIAssistant({ department }: InlineAIAssistantProps) {
         </Box>
       )}
 
-      {/* Quick action pills */}
-      {messages.length === 0 && (
-        <Box sx={{ px: 1.5, pt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-          {quickActions.map(action => (
-            <Chip
-              key={action}
-              label={action}
-              size="small"
-              variant="outlined"
-              onClick={() => handleQuickAction(action)}
-              sx={{
-                fontSize: '0.7rem',
-                borderRadius: 1.5,
-                cursor: 'pointer',
-                '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
-              }}
-            />
-          ))}
-        </Box>
-      )}
+      {/* Quick action pills — shown when no messages, or as compact row during conversation */}
+      <Box
+        sx={{
+          px: 1.5,
+          pt: hasMessages ? 0.5 : 1,
+          pb: hasMessages ? 0.5 : 0,
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 0.5,
+        }}
+      >
+        {quickActions.map(action => (
+          <Chip
+            key={action}
+            label={action}
+            size="small"
+            variant="outlined"
+            onClick={() => handleQuickAction(action)}
+            disabled={isLoading}
+            sx={{
+              fontSize: hasMessages ? '0.6rem' : '0.7rem',
+              height: hasMessages ? 20 : undefined,
+              borderRadius: 1.5,
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+              '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
+            }}
+          />
+        ))}
+      </Box>
 
       {/* Input bar */}
       <Box
