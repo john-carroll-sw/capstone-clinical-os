@@ -26,39 +26,50 @@ import {
 } from "@mui/icons-material";
 import { customColors } from "../../theme/muiTheme";
 import { useTheme } from "../../context/ThemeContext";
+import { usePersona } from "../../context/PersonaContext";
 import { usePreferences } from "../../services/preferencesStore";
 import { AppSidebar } from "./AppSidebar";
 import { AIChatPanel } from "../ai/AIChatPanel";
 import { FeedbackWidget } from "../feedback/FeedbackWidget";
 import { ForYouPage } from "../pages/ForYouPage";
-import { LandingPage } from "../pages/LandingPage";
+import { HealthcareDashboard } from "../pages/HealthcareDashboard";
 import { InsightsAlertsPage } from "../pages/InsightsAlertsPage";
 import { ReportsPage } from "../pages/ReportsPage";
 import { SettingsPage } from "../pages/SettingsPage";
 import { DevPanelPage } from "../pages/DevPanelPage";
-import { CURRENT_SPRINT } from "../../data/mockData";
 
-// Page types: dashboards, insights-alerts, reports, settings, for-you, dev-panel (experimental)
-type Page = "dashboards" | "insights-alerts" | "reports" | "settings" | "for-you" | "dev-panel";
+// Page types
+type Page = "home" | "dashboard" | "signals" | "reports" | "settings" | "clinician" | "governance" | "dev-panel";
 
 // Map URL paths to page IDs
 const PATH_TO_PAGE: Record<string, Page> = {
-  "/": "dashboards",
-  "/dashboard": "dashboards",
-  "/insights": "insights-alerts",
+  "/": "home",
+  "/dashboard": "dashboard",
+  "/dashboard/pharmacy": "dashboard",
+  "/dashboard/nursing": "dashboard",
+  "/signals": "signals",
   "/reports": "reports",
   "/settings": "settings",
-  "/for-you": "for-you",
+  "/clinician": "clinician",
+  "/clinician/pharmacy": "clinician",
+  "/clinician/nursing": "clinician",
+  "/governance": "governance",
+  "/governance/registry": "governance",
+  "/governance/audit": "governance",
+  "/governance/rbac": "governance",
+  "/governance/allowlists": "governance",
   "/dev-panel": "dev-panel",
 };
 
 // Map page IDs to URL paths
 const PAGE_TO_PATH: Record<Page, string> = {
-  "dashboards": "/dashboard",
-  "insights-alerts": "/insights",
+  "home": "/",
+  "dashboard": "/dashboard",
+  "signals": "/signals",
   "reports": "/reports",
   "settings": "/settings",
-  "for-you": "/for-you",
+  "clinician": "/clinician",
+  "governance": "/governance",
   "dev-panel": "/dev-panel",
 };
 
@@ -117,9 +128,10 @@ const SIDEBAR_COLLAPSED_WIDTH = 72;
 export function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { persona } = usePersona();
   
   // Derive active page from URL
-  const activePage: Page = PATH_TO_PAGE[location.pathname] || "dashboards";
+  const activePage: Page = PATH_TO_PAGE[location.pathname] || "home";
   
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [feedbackStyle, setFeedbackStyle] = useState<'quick' | 'guided'>('quick');
@@ -137,11 +149,13 @@ export function AppShell() {
   // Update document title
   useEffect(() => {
     const titles: Record<Page, string> = {
-      dashboards: "Dashboard",
-      "insights-alerts": "Insights & Alerts",
+      home: "AI Briefing",
+      dashboard: "Outcomes Dashboard",
+      signals: "Signals & Incidents",
       reports: "Reports",
       settings: "Settings",
-      "for-you": "For You",
+      clinician: "Clinician Panel",
+      governance: "Governance",
       "dev-panel": "Dev Panel",
     };
     document.title = `${titles[activePage]} | ClinicalOS`;
@@ -187,9 +201,11 @@ export function AppShell() {
 
   const renderPage = () => {
     switch (activePage) {
-      case "dashboards":
-        return <LandingPage onTakeAction={handleTakeAction} />;
-      case "insights-alerts":
+      case "home":
+        return <ForYouPage onOpenChat={() => setIsChatOpen(true)} />;
+      case "dashboard":
+        return <HealthcareDashboard onTakeAction={handleTakeAction} />;
+      case "signals":
         return (
           <InsightsAlertsPage 
             highlightedInitiativeId={highlightedAlertId}
@@ -200,22 +216,34 @@ export function AppShell() {
         return <ReportsPage />;
       case "settings":
         return <SettingsPage />;
-      case "for-you":
-        return <ForYouPage onOpenChat={() => setIsChatOpen(true)} />;
+      case "clinician":
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'text.secondary' }}>
+            <Typography variant="h5">Clinician Panel — Coming in Phase 3</Typography>
+          </Box>
+        );
+      case "governance":
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'text.secondary' }}>
+            <Typography variant="h5">Governance Control Plane — Coming in Phase 4</Typography>
+          </Box>
+        );
       case "dev-panel":
         return <DevPanelPage />;
       default:
-        return <LandingPage onTakeAction={handleTakeAction} />;
+        return <ForYouPage onOpenChat={() => setIsChatOpen(true)} />;
     }
   };
 
   const getPageTitle = () => {
     const titles: Record<Page, string> = {
-      dashboards: "Dashboard",
-      "insights-alerts": "Insights & Alerts",
+      home: "AI Briefing",
+      dashboard: "Outcomes Dashboard",
+      signals: "Signals & Incidents",
       reports: "Reports",
       settings: "Settings",
-      "for-you": "For You",
+      clinician: "Clinician Panel",
+      governance: "Governance",
       "dev-panel": "Dev Panel",
     };
     return titles[activePage];
@@ -279,7 +307,7 @@ export function AppShell() {
                 {getPageTitle()}
               </Typography>
               <Chip
-                label={`${CURRENT_SPRINT.quarter} ${CURRENT_SPRINT.year}`}
+                label={`${persona.name} · ${persona.department === 'pharmacy' ? 'Pharmacy' : 'Nursing'}`}
                 size="small"
                 color="primary"
                 variant="outlined"

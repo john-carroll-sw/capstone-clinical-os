@@ -30,8 +30,10 @@ import {
   Logout,
 } from "@mui/icons-material";
 import { useUser } from "../../context/UserContext";
+import { usePersona } from "../../context/PersonaContext";
 import { usePreferences, type UserPreferences } from "../../services/preferencesStore";
 import { customColors } from "../../theme/muiTheme";
+import { PersonaSwitcher } from "../PersonaSwitcher";
 
 /**
  * Get user initials from display name
@@ -107,6 +109,9 @@ export function SettingsPage() {
           {saveError}
         </Alert>
       )}
+
+      {/* Persona Switcher — the demo superpower */}
+      <PersonaSwitcher />
 
       {/* Profile Section */}
       <Card>

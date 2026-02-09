@@ -24,7 +24,6 @@ import {
   MenuItem,
 } from "@mui/material";
 import {
-  Person,
   Dashboard,
   AutoAwesome,
   Description,
@@ -36,10 +35,15 @@ import {
   DarkMode,
   Computer,
   Code,
+  LocalHospital,
+  Shield,
+  NotificationsActive,
+  Home,
 } from "@mui/icons-material";
 import { useTheme, type Theme } from "../../context/ThemeContext";
-import { useUser } from "../../context/UserContext";
+import { usePersona } from "../../context/PersonaContext";
 import { customColors } from "../../theme/muiTheme";
+import { PersonaSwitcher } from "../PersonaSwitcher";
 
 /**
  * Get user initials from display name
@@ -98,7 +102,7 @@ export function AppSidebar({
   showDevPanel = false,
 }: AppSidebarProps) {
   const { theme, setTheme, resolvedTheme } = useTheme();
-  const { profile } = useUser();
+  const { persona } = usePersona();
   const collapsed = isCollapsed;
   
   // Profile menu state
@@ -115,7 +119,6 @@ export function AppSidebar({
   
   const handleThemeSelect = (newTheme: Theme) => {
     setTheme(newTheme);
-    // Don't close menu - let user see the change
   };
   
   const handleSettingsClick = () => {
@@ -123,38 +126,42 @@ export function AppSidebar({
     onNavigate("settings");
   };
   
-  // TODO: Replace with real unread count from API when available
-  const unreadCount = 0;
+  // User info from persona context
+  const displayName = persona.name;
+  const userInitials = persona.avatar;
+  const userRole = persona.title;
   
-  // User info from profile context
-  const displayName = profile?.displayName || 'User';
-  const userInitials = getInitials(displayName);
-  const userRole = profile?.domain || '';
-  
-  // Build nav items - For You is always shown (no longer a preference)
+  // Healthcare navigation items
   const navItems: NavItem[] = [
     {
-      id: "dashboards",
-      label: "Dashboard",
+      id: "home",
+      label: "AI Briefing",
+      icon: <Home />,
+    },
+    {
+      id: "dashboard",
+      label: "Outcomes Dashboard",
       icon: <Dashboard />,
     },
     {
-      id: "insights-alerts",
-      label: "Insights & Alerts",
-      icon: <AutoAwesome />,
-      badge: unreadCount > 0 ? unreadCount : undefined,
-      badgeColor: "error",
+      id: "signals",
+      label: "Signals & Incidents",
+      icon: <NotificationsActive />,
     },
     {
       id: "reports",
       label: "Reports",
       icon: <Description />,
     },
-    // For You is always visible now
     {
-      id: "for-you",
-      label: "For You",
-      icon: <Person />,
+      id: "clinician",
+      label: "Clinician Panel",
+      icon: <LocalHospital />,
+    },
+    {
+      id: "governance",
+      label: "Governance",
+      icon: <Shield />,
     },
     // Conditionally add "Dev Panel" if experimental flag is enabled
     ...(showDevPanel ? [{
@@ -268,7 +275,7 @@ export function AppSidebar({
             fontSize: "1.1rem",
           }}
         >
-          T
+          C
         </Avatar>
         {!collapsed && (
           <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -310,6 +317,26 @@ export function AppSidebar({
           />
         ))}
       </List>
+
+      {/* Persona Switcher (compact, in sidebar) */}
+      {!collapsed && (
+        <>
+          <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
+          <Box sx={{ 
+            color: isDark ? "text.primary" : "#fff",
+            '& .MuiChip-root': {
+              color: isDark ? undefined : 'rgba(255,255,255,0.9)',
+              borderColor: isDark ? undefined : 'rgba(255,255,255,0.3)',
+            },
+            '& .MuiAvatar-root': {
+              bgcolor: isDark ? undefined : 'rgba(255,255,255,0.2)',
+              color: isDark ? undefined : '#fff',
+            },
+          }}>
+            <PersonaSwitcher compact />
+          </Box>
+        </>
+      )}
 
       {/* Bottom Section - Profile with popup menu */}
       <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
@@ -371,7 +398,7 @@ export function AppSidebar({
                     display: "block",
                   }}
                 >
-                  {profile?.lanID || userRole}
+                  {userRole}
                 </Typography>
               </Box>
             )}
