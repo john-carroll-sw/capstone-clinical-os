@@ -10,8 +10,8 @@
  */
 
 import { useState, type ReactNode, type FormEvent } from 'react';
-import { Box, Typography, TextField, Button, Paper, Alert } from '@mui/material';
-import { Lock } from '@mui/icons-material';
+import { Box, Typography, TextField, Button, Paper, Alert, InputAdornment, IconButton } from '@mui/material';
+import { Lock, Visibility, VisibilityOff } from '@mui/icons-material';
 
 const DEMO_PASS = import.meta.env.VITE_DEMO_PASS as string | undefined;
 const SESSION_KEY = 'clinicalos_demo_auth';
@@ -24,6 +24,7 @@ function isAuthenticated(): boolean {
 export function DemoAuthGate({ children }: { children: ReactNode }) {
   const [authed, setAuthed] = useState(isAuthenticated);
   const [input, setInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
 
   // No password configured — render children immediately
@@ -98,12 +99,28 @@ export function DemoAuthGate({ children }: { children: ReactNode }) {
         <Box component="form" onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             placeholder="Password"
             value={input}
             onChange={e => setInput(e.target.value)}
             autoFocus
             sx={{ mb: 2 }}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(prev => !prev)}
+                      edge="end"
+                      size="small"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
           <Button
             type="submit"
