@@ -54,6 +54,7 @@ import { useUser } from "../../context/UserContext";
 import { axiosInstance } from "../../api/axiosInstance";
 import { fetchWithAuth } from "../../api/authFetch";
 import { env } from "../../config/env";
+import { getMockChatResponse, GENERIC_MOCK_FALLBACK } from "../../data/healthcare/chatResponses";
 
 // Surface-specific quick prompts
 const LEADERSHIP_PROMPTS = [
@@ -817,18 +818,20 @@ export function AIChatPanel({ isOpen, onClose, surface = 'leadership' }: AIChatP
         setStreamingContent("");
       }
       
-      // Fallback response when API is unavailable
+      // Fallback: use mock responses keyed by the user's query
+      const mockResponse = getMockChatResponse(surface, query) ?? GENERIC_MOCK_FALLBACK;
+      
       return {
         id: `msg-${Date.now()}`,
         role: "assistant",
-        content: `I'm having trouble connecting to the AI service right now. Please try again in a moment, or check the **For You** page for your latest briefing.`,
+        content: mockResponse.content,
         timestamp: new Date().toISOString(),
-        sources: [{ name: "System", kind: "system", confidence: 1 }],
+        sources: mockResponse.sources ?? [{ name: "System", kind: "system", confidence: 1 }],
         responseType: "text_only",
-        responseTitle: "System",
+        responseTitle: title,
       };
     }
-  }, [apiBaseUrl, detectResponseType]);
+  }, [apiBaseUrl, detectResponseType, surface]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -889,9 +892,64 @@ export function AIChatPanel({ isOpen, onClose, surface = 'leadership' }: AIChatP
   };
 
   const handleQuickPrompt = (prompt: string) => {
-    setInput(prompt);
-    inputRef.current?.focus();
+    // Auto-submit the quick prompt instead of just populating input
+    if (isLoading) return;
+
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+
+    if (!messages.some((message) => message.role === "user")) {
+      setAreQuickPromptsOpen(false);
+    }
+
+    const userMessage: Message = {
+      id: `msg-${Date.now()}`,
+      role: "user",
+      content: prompt,
+      timestamp: new Date().toISOString(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
     setAreQuickPromptsOpen(false);
+
+    (async () => {
+      let activeThreadId: string | null = null;
+      let currentStreamId = streamIdRef.current;
+      try {
+        const contextMessages = buildContextMessages([...messages, userMessage]);
+        activeThreadId = await ensureThread(prompt);
+        if (streamAbortRef.current) {
+          streamAbortRef.current.abort();
+        }
+        const controller = new AbortController();
+        streamAbortRef.current = controller;
+        streamIdRef.current += 1;
+        currentStreamId = streamIdRef.current;
+        activeStreamThreadIdRef.current = activeThreadId;
+        const response = await generateAIResponse(
+          prompt,
+          contextMessages,
+          activeThreadId,
+          controller.signal,
+          currentStreamId,
+        );
+        if (activeStreamThreadIdRef.current === activeThreadId && streamIdRef.current === currentStreamId && response.content) {
+          setMessages((prev) => [...prev, response]);
+        }
+        if (activeThreadId) {
+          refreshThreads();
+        }
+      } catch (err) {
+        console.error("Error generating response:", err);
+      } finally {
+        if (activeStreamThreadIdRef.current === activeThreadId && streamIdRef.current === currentStreamId) {
+          setIsLoading(false);
+        }
+      }
+    })();
   };
 
   const toggleVoice = () => {

@@ -97,8 +97,8 @@ const SECTION_CONFIG: Record<string, {
   context: {
     icon: <Person />,
     color: customColors.accent.cyan,
-    title: "Your Portfolio",
-    emptyMessage: "No items are currently assigned to you. When you own Objectives or Initiatives, they'll appear here with relevant updates and status.",
+    title: "Your Program Areas",
+    emptyMessage: "No program areas are currently assigned to you. When you own program goals or use cases, they'll appear here with relevant updates.",
   },
 };
 
@@ -586,12 +586,12 @@ export function ForYouPage({ onOpenChat }: ForYouPageProps) {
               }}
             >
               <StatPill 
-                label="Portfolio Health"
+                label="Program Health"
                 value={`${Math.round(briefing.portfolioStats.avgAttainment)}%`}
                 trend={briefing.portfolioStats.weekOverWeekChange}
               />
               <StatPill 
-                label="Key Results"
+                label="Active KRs"
                 value={briefing.portfolioStats.totalKeyResults}
                 breakdown={{
                   green: briefing.portfolioStats.healthCounts.green,
@@ -615,7 +615,7 @@ export function ForYouPage({ onOpenChat }: ForYouPageProps) {
               )}
               {briefing.portfolioStats.userOwnedInitiatives > 0 && (
                 <StatPill 
-                  label="Your Initiatives"
+                  label="Your Use Cases"
                   value={briefing.portfolioStats.userOwnedInitiatives}
                   icon={<Person sx={{ fontSize: 14 }} />}
                 />
@@ -734,11 +734,11 @@ function buildDisplaySections(sections: BriefingSection[]): BriefingSection[] {
     result.push(awareness);
   }
   
-  // Your Portfolio always shown (items assigned to user)
+  // Your Program Areas always shown
   result.push(sectionMap.get("context") || {
     type: "context",
     priority: 4,
-    title: "Your Portfolio",
+    title: "Your Program Areas",
     items: [],
   });
   

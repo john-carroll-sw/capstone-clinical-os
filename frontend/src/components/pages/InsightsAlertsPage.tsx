@@ -525,7 +525,7 @@ export function InsightsAlertsPage({ highlightedInitiativeId, onClearHighlight }
               />
             </Box>
             <Typography variant="caption" color="text.secondary">
-              {getDataFreshnessLabel(DATA_FRESHNESS.aiInsights)} • AI-generated analysis
+              {getDataFreshnessLabel(DATA_FRESHNESS.aiInsights)} • Clinical AI program analysis
             </Typography>
           </Box>
 

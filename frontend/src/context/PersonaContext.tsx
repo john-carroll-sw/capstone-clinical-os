@@ -37,6 +37,8 @@ interface PersonaContextValue {
   setRole: (role: Role) => void;
   /** Switch role without navigating (used for auto-sync on surface change) */
   setRoleQuiet: (role: Role) => void;
+  /** Switch role + department without navigating (used for clinician sub-page sync) */
+  syncPersonaQuiet: (role: Role, department: Department) => void;
 }
 
 const PersonaCtx = createContext<PersonaContextValue | null>(null);
@@ -109,6 +111,16 @@ export function PersonaProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  /** Switch role + department without triggering navigation — for clinician sub-page sync */
+  const syncPersonaQuiet = useCallback((role: Role, department: Department) => {
+    setPersona(prev => {
+      const match = PERSONAS.find(p => p.role === role && p.department === department)
+        || PERSONAS.find(p => p.role === role)
+        || prev;
+      return match;
+    });
+  }, []);
+
   return (
     <PersonaCtx.Provider value={{
       persona,
@@ -120,6 +132,7 @@ export function PersonaProvider({ children }: { children: ReactNode }) {
       setDepartment,
       setRole,
       setRoleQuiet,
+      syncPersonaQuiet,
     }}>
       {children}
     </PersonaCtx.Provider>

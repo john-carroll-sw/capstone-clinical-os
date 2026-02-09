@@ -11,14 +11,36 @@
  * - Nursing: SBAR handoff summary with edit/sign-off
  */
 
-import { useState } from 'react';
-import { Box, Typography, Chip, List, ListItemButton, ListItemText, ListItemAvatar, Avatar, Divider, Badge } from '@mui/material';
-import { Person, Warning, FiberManualRecord } from '@mui/icons-material';
+import { useState, useRef, useCallback } from 'react';
+import {
+  Box,
+  Typography,
+  Chip,
+  List,
+  ListItemButton,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  Badge,
+  TextField,
+  IconButton,
+  Paper,
+  CircularProgress,
+  Fade,
+} from '@mui/material';
+import { Warning, FiberManualRecord, Send, AutoAwesome } from '@mui/icons-material';
+import ReactMarkdown from 'react-markdown';
 import { customColors } from '../../theme/muiTheme';
 import { useTheme } from '../../context/ThemeContext';
 import { PATIENTS, type Patient } from '../../data/healthcare/patients';
 import { PharmacyAlertQueue } from './PharmacyAlertQueue';
 import { NursingHandoffView } from './NursingHandoffView';
+import {
+  getMockChatResponse,
+  GENERIC_MOCK_FALLBACK,
+  CLINICIAN_PHARMACY_MOCK_RESPONSES,
+  CLINICIAN_NURSING_MOCK_RESPONSES,
+} from '../../data/healthcare/chatResponses';
 
 interface ClinicianPanelProps {
   department: 'pharmacy' | 'nursing';
@@ -207,6 +229,196 @@ function PatientRoster({ patients, selectedPatientId, onSelectPatient, departmen
   );
 }
 
+// ─── Inline AI Assistant ──────────────────────────────────────
+
+interface InlineMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+interface InlineAIAssistantProps {
+  department: 'pharmacy' | 'nursing';
+}
+
+function InlineAIAssistant({ department }: InlineAIAssistantProps) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
+  const [input, setInput] = useState('');
+  const [messages, setMessages] = useState<InlineMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const quickActions = department === 'pharmacy'
+    ? Object.keys(CLINICIAN_PHARMACY_MOCK_RESPONSES)
+    : Object.keys(CLINICIAN_NURSING_MOCK_RESPONSES);
+
+  const scrollToBottom = useCallback(() => {
+    setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+  }, []);
+
+  const submitQuery = useCallback(async (query: string) => {
+    if (!query.trim() || isLoading) return;
+
+    const userMsg: InlineMessage = {
+      id: `u-${Date.now()}`,
+      role: 'user',
+      content: query,
+    };
+    setMessages(prev => [...prev, userMsg]);
+    setInput('');
+    setIsLoading(true);
+    scrollToBottom();
+
+    // Simulate brief network delay
+    await new Promise(r => setTimeout(r, 600 + Math.random() * 400));
+
+    const mockResponse = getMockChatResponse('clinician', query) ?? GENERIC_MOCK_FALLBACK;
+    const assistantMsg: InlineMessage = {
+      id: `a-${Date.now()}`,
+      role: 'assistant',
+      content: mockResponse.content,
+    };
+    setMessages(prev => [...prev, assistantMsg]);
+    setIsLoading(false);
+    scrollToBottom();
+  }, [isLoading, scrollToBottom]);
+
+  const handleQuickAction = (action: string) => {
+    submitQuery(action);
+  };
+
+  return (
+    <Box
+      sx={{
+        borderTop: '1px solid',
+        borderColor: 'divider',
+        display: 'flex',
+        flexDirection: 'column',
+        maxHeight: messages.length > 0 ? 320 : 'auto',
+        bgcolor: isDark ? customColors.dark.surface : '#f8fafc',
+      }}
+    >
+      {/* Messages area — only visible when there are messages */}
+      {messages.length > 0 && (
+        <Box sx={{ flex: 1, overflow: 'auto', px: 1.5, py: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          {messages.map(msg => (
+            <Fade in key={msg.id}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
+                }}
+              >
+                <Paper
+                  elevation={0}
+                  sx={{
+                    maxWidth: '85%',
+                    px: 1.5,
+                    py: 1,
+                    borderRadius: 1.5,
+                    bgcolor: msg.role === 'user'
+                      ? customColors.brand.navy
+                      : isDark ? customColors.dark.card : 'background.paper',
+                    color: msg.role === 'user' ? '#fff' : 'text.primary',
+                    fontSize: '0.8rem',
+                    '& p': { margin: 0, mb: 0.5, '&:last-child': { mb: 0 } },
+                    '& ul, & ol': { m: 0, pl: 2 },
+                    '& li': { mb: 0.25 },
+                    '& table': { fontSize: '0.75rem', borderCollapse: 'collapse', width: '100%', mt: 1, mb: 1 },
+                    '& th, & td': { border: '1px solid', borderColor: 'divider', px: 1, py: 0.5, textAlign: 'left' },
+                    '& th': { fontWeight: 600, bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' },
+                    '& strong': { fontWeight: 600 },
+                  }}
+                >
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                </Paper>
+              </Box>
+            </Fade>
+          ))}
+          {isLoading && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, pl: 0.5 }}>
+              <CircularProgress size={12} sx={{ color: customColors.accent.cyan }} />
+              <Typography variant="caption" color="text.secondary">Analyzing...</Typography>
+            </Box>
+          )}
+          <div ref={messagesEndRef} />
+        </Box>
+      )}
+
+      {/* Quick action pills */}
+      {messages.length === 0 && (
+        <Box sx={{ px: 1.5, pt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+          {quickActions.map(action => (
+            <Chip
+              key={action}
+              label={action}
+              size="small"
+              variant="outlined"
+              onClick={() => handleQuickAction(action)}
+              sx={{
+                fontSize: '0.7rem',
+                borderRadius: 1.5,
+                cursor: 'pointer',
+                '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
+              }}
+            />
+          ))}
+        </Box>
+      )}
+
+      {/* Input bar */}
+      <Box
+        component="form"
+        onSubmit={(e: React.FormEvent) => { e.preventDefault(); submitQuery(input); }}
+        sx={{ display: 'flex', alignItems: 'center', gap: 0.75, px: 1.5, py: 1 }}
+      >
+        <AutoAwesome sx={{ fontSize: 16, color: customColors.accent.cyan, flexShrink: 0 }} />
+        <TextField
+          inputRef={inputRef}
+          fullWidth
+          size="small"
+          placeholder={department === 'pharmacy' ? 'Ask about this patient...' : 'Ask about handoffs, patients...'}
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          disabled={isLoading}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              if (input.trim()) submitQuery(input);
+            }
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 1.5,
+              fontSize: '0.8rem',
+            },
+            '& .MuiOutlinedInput-input': {
+              py: 0.75,
+            },
+          }}
+        />
+        <IconButton
+          type="submit"
+          size="small"
+          disabled={!input.trim() || isLoading}
+          sx={{
+            width: 28,
+            height: 28,
+            bgcolor: 'primary.main',
+            color: 'primary.contrastText',
+            '&:hover': { bgcolor: 'primary.dark' },
+            '&:disabled': { bgcolor: 'action.disabledBackground' },
+          }}
+        >
+          <Send sx={{ fontSize: 14 }} />
+        </IconButton>
+      </Box>
+    </Box>
+  );
+}
+
 // ─── Main Clinician Panel ─────────────────────────────────────
 
 export function ClinicianPanel({ department }: ClinicianPanelProps) {
@@ -267,13 +479,17 @@ export function ClinicianPanel({ department }: ClinicianPanelProps) {
             department={department}
           />
 
-          {/* Main content area */}
-          <Box sx={{ flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
-            {department === 'pharmacy' ? (
-              <PharmacyAlertQueue patient={selectedPatient} />
-            ) : (
-              <NursingHandoffView patient={selectedPatient} />
-            )}
+          {/* Main content area + inline AI */}
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <Box sx={{ flex: 1, overflow: 'auto' }}>
+              {department === 'pharmacy' ? (
+                <PharmacyAlertQueue patient={selectedPatient} />
+              ) : (
+                <NursingHandoffView patient={selectedPatient} />
+              )}
+            </Box>
+            {/* Inline AI Assistant */}
+            <InlineAIAssistant department={department} />
           </Box>
         </Box>
       </Box>

@@ -45,14 +45,14 @@ export function ReportsPage() {
       <Card>
         <CardContent>
           <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
-            Portfolio at a Glance
+            Clinical AI Program at a Glance
           </Typography>
 
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
             {/* Goal Health Distribution */}
             <Box sx={{ flex: "1 1 45%", minWidth: 280 }}>
               <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2 }}>
-                Goal Health Distribution
+                Program Goal Health
               </Typography>
               <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
                 <Box
@@ -120,7 +120,7 @@ export function ReportsPage() {
             {/* KR Progress Bars */}
             <Box sx={{ flex: "1 1 45%", minWidth: 280 }}>
               <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2 }}>
-                KR Attainment by Goal
+                KR Attainment by Program Area
               </Typography>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {GOALS.slice(0, 4).map((goal) => {
@@ -197,7 +197,7 @@ export function ReportsPage() {
               <Chip
                 size="small"
                 icon={<Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: customColors.health.green, ml: 1 }} />}
-                label="Portfolio Analytics"
+                label="Clinical AI Analytics"
                 sx={{ fontSize: "0.7rem" }}
               />
               <Typography variant="caption" color="text.secondary">

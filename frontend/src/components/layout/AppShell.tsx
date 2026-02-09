@@ -9,7 +9,7 @@
  * /{surface}/settings       → Settings (within current surface)
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -173,21 +173,32 @@ const SURFACE_TO_ROLE: Record<string, string> = {
 export function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { persona, setRoleQuiet } = usePersona();
+  const { persona, setRoleQuiet, syncPersonaQuiet } = usePersona();
   
   // Derive active surface and sub-page from URL
   const surface = getSurface(location.pathname);
   const subPage = getSubPage(location.pathname);
 
-  // Auto-sync persona role when surface changes (without navigating)
-  // e.g. navigating to /clinician should switch to a clinician persona
-  useEffect(() => {
+  // Auto-sync persona role (and department for clinician sub-pages) when surface/subPage changes
+  // useLayoutEffect ensures the persona is set before the first paint (avoids flash of wrong persona on cold loads)
+  useLayoutEffect(() => {
     const expectedRole = SURFACE_TO_ROLE[surface];
-    if (expectedRole && persona.role !== expectedRole) {
+    if (!expectedRole) return;
+
+    // Clinician surface: sync department based on sub-page (nursing vs pharmacy)
+    if (surface === 'clinician') {
+      const dept = subPage === 'nursing' ? 'nursing' : 'pharmacy';
+      if (persona.role !== expectedRole || persona.department !== dept) {
+        syncPersonaQuiet(expectedRole as any, dept as any);
+      }
+      return;
+    }
+
+    if (persona.role !== expectedRole) {
       setRoleQuiet(expectedRole as any);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [surface]);
+  }, [surface, subPage]);
   
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [feedbackStyle, setFeedbackStyle] = useState<'quick' | 'guided'>('quick');
