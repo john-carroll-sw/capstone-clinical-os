@@ -9,6 +9,7 @@ import { UserProvider, useUser } from './context/UserContext';
 import { InitiativeDataProvider } from './context/InitiativeDataContext';
 import { PersonaProvider } from './context/PersonaContext';
 import { AppShell } from './components/layout/AppShell';
+import { DemoAuthGate } from './components/DemoAuthGate';
 import './index.css';
 
 /**
@@ -33,6 +34,7 @@ function PreferencesGate({ children }: { children: ReactNode }) {
 
 function App() {
   return (
+    <DemoAuthGate>
     <BrowserRouter>
       <AuthProvider>
         <UserProvider>
@@ -64,6 +66,7 @@ function App() {
         </UserProvider>
       </AuthProvider>
     </BrowserRouter>
+    </DemoAuthGate>
   );
 }
 
