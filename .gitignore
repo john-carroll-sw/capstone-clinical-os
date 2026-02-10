@@ -50,7 +50,11 @@ docs/_working/
 LOCAL_john/
 
 # Original project docs (being replaced — not for commit)
-docs/
+docs/*
+!docs/images/
+!docs/images/**
+# Keep only the organized readme screenshots; ignore raw captures
+docs/images/*.png
 
 # Backend (not needed for capstone demo — frontend-only with mocks)
 backend/
