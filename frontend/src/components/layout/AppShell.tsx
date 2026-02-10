@@ -18,9 +18,6 @@ import {
   Typography,
   Chip,
   Fab,
-  Popover,
-  Button,
-  Stack,
 } from "@mui/material";
 import {
   Mic,
@@ -201,8 +198,6 @@ export function AppShell() {
   }, [surface, subPage]);
   
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [feedbackStyle, setFeedbackStyle] = useState<'quick' | 'guided'>('quick');
-  const [feedbackAnchorEl, setFeedbackAnchorEl] = useState<HTMLElement | null>(null);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isSidebarHidden, setIsSidebarHidden] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
@@ -384,13 +379,12 @@ export function AppShell() {
       <FeedbackWidget
         open={isFeedbackOpen}
         onClose={() => setIsFeedbackOpen(false)}
-        style={feedbackStyle}
       />
 
       {/* Floating Feedback Button */}
       <Fab
         variant="extended"
-        onClick={(e) => setFeedbackAnchorEl(e.currentTarget)}
+        onClick={() => setIsFeedbackOpen((prev) => !prev)}
         sx={{
           position: "fixed",
           bottom: 24,
@@ -406,60 +400,6 @@ export function AppShell() {
         <RateReview sx={{ mr: 1 }} />
         Feedback
       </Fab>
-
-      {/* Feedback Mode Selection Popover */}
-      <Popover
-        open={Boolean(feedbackAnchorEl)}
-        anchorEl={feedbackAnchorEl}
-        onClose={() => setFeedbackAnchorEl(null)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        sx={{ mb: 1 }}
-      >
-        <Box sx={{ p: 2, minWidth: 200 }}>
-          <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
-            Choose feedback style
-          </Typography>
-          <Stack spacing={1}>
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={() => {
-                setFeedbackStyle('quick');
-                setFeedbackAnchorEl(null);
-                setIsFeedbackOpen(true);
-              }}
-              sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
-            >
-              <Box>
-                <Typography variant="body2" sx={{ fontWeight: 500 }}>Quick</Typography>
-                <Typography variant="caption" color="text.secondary">Fixed questions, ~2 min</Typography>
-              </Box>
-            </Button>
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={() => {
-                setFeedbackStyle('guided');
-                setFeedbackAnchorEl(null);
-                setIsFeedbackOpen(true);
-              }}
-              sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
-            >
-              <Box>
-                <Typography variant="body2" sx={{ fontWeight: 500 }}>Guided</Typography>
-                <Typography variant="caption" color="text.secondary">AI conversation, ~5 min</Typography>
-              </Box>
-            </Button>
-          </Stack>
-        </Box>
-      </Popover>
     </Box>
   );
 }
