@@ -18,6 +18,7 @@ import {
   Typography,
   Chip,
   Fab,
+  type Theme,
 } from "@mui/material";
 import {
   Mic,
@@ -295,6 +296,23 @@ export function AppShell() {
     }
   };
 
+  const isGlobalAssistantOpen = surface !== "clinician" && isChatOpen;
+  const isClinicianSurface = surface === "clinician";
+
+  const feedbackButtonPosition = {
+    bottom: isClinicianSurface ? { xs: 104, sm: 112 } : { xs: 24, sm: 24 },
+    right: isGlobalAssistantOpen ? { xs: 16, md: 456 } : { xs: 16, sm: 24 },
+    zIndex: (theme: Theme) => (
+      isGlobalAssistantOpen ? theme.zIndex.drawer + 4 : theme.zIndex.drawer + 1
+    ),
+  };
+
+  const feedbackWidgetPosition = {
+    bottom: isClinicianSurface ? { xs: 168, sm: 176 } : { xs: 88, sm: 92 },
+    right: isGlobalAssistantOpen ? { xs: 16, md: 456 } : { xs: 16, sm: 24 },
+    zIndex: (theme: Theme) => theme.zIndex.drawer + 4,
+  };
+
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar */}
@@ -379,6 +397,7 @@ export function AppShell() {
       <FeedbackWidget
         open={isFeedbackOpen}
         onClose={() => setIsFeedbackOpen(false)}
+        positionSx={feedbackWidgetPosition}
       />
 
       {/* Floating Feedback Button */}
@@ -387,14 +406,13 @@ export function AppShell() {
         onClick={() => setIsFeedbackOpen((prev) => !prev)}
         sx={{
           position: "fixed",
-          bottom: 24,
-          right: 24,
+          ...feedbackButtonPosition,
           bgcolor: customColors.brand.navy,
           color: "#fff",
+          transition: "right 0.2s ease, bottom 0.2s ease, background-color 0.2s ease",
           "&:hover": {
             bgcolor: customColors.brand.navyLight,
           },
-          zIndex: 1000,
         }}
       >
         <RateReview sx={{ mr: 1 }} />

@@ -15,6 +15,8 @@ import {
   Button,
   useTheme,
   Alert,
+  type SxProps,
+  type Theme,
 } from '@mui/material';
 import { Close, Send, PhotoCamera, Delete } from '@mui/icons-material';
 import { alpha } from '@mui/material/styles';
@@ -26,6 +28,7 @@ import { usePersona } from '../../context/PersonaContext';
 export interface FeedbackWidgetProps {
   open: boolean;
   onClose: () => void;
+  positionSx?: SxProps<Theme>;
 }
 
 /* ------------------------------------------------------------------ */
@@ -36,10 +39,11 @@ type WidgetStep = 'form' | 'submitting' | 'success' | 'error';
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
-export function FeedbackWidget({ open, onClose }: FeedbackWidgetProps) {
+export function FeedbackWidget({ open, onClose, positionSx }: FeedbackWidgetProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
   const { persona } = usePersona();
+  const positionOverrides = Array.isArray(positionSx) ? positionSx : positionSx ? [positionSx] : [];
 
   const [step, setStep] = useState<WidgetStep>('form');
   const [text, setText] = useState('');
@@ -133,21 +137,24 @@ export function FeedbackWidget({ open, onClose }: FeedbackWidgetProps) {
     <Collapse in={open}>
       <Paper
         elevation={8}
-        sx={{
-          position: 'fixed',
-          bottom: { xs: 88, sm: 92 },
-          right: { xs: 16, sm: 24 },
-          width: { xs: 'calc(100vw - 32px)', sm: 340 },
-          maxWidth: 380,
-          display: 'flex',
-          flexDirection: 'column',
-          borderRadius: 2,
-          overflow: 'hidden',
-          zIndex: 1100,
-          bgcolor: 'background.paper',
-          border: 1,
-          borderColor: 'divider',
-        }}
+        sx={[
+          {
+            position: 'fixed',
+            bottom: { xs: 88, sm: 92 },
+            right: { xs: 16, sm: 24 },
+            width: { xs: 'calc(100vw - 32px)', sm: 340 },
+            maxWidth: 380,
+            display: 'flex',
+            flexDirection: 'column',
+            borderRadius: 2,
+            overflow: 'hidden',
+            zIndex: (theme) => theme.zIndex.drawer + 4,
+            bgcolor: 'background.paper',
+            border: 1,
+            borderColor: 'divider',
+          },
+          ...positionOverrides,
+        ]}
       >
         {/* ---- Header ---- */}
         <Box
