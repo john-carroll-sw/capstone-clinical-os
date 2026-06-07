@@ -144,6 +144,8 @@ export function FeedbackWidget({ open, onClose, positionSx }: FeedbackWidgetProp
             right: { xs: 16, sm: 24 },
             width: { xs: 'calc(100vw - 32px)', sm: 340 },
             maxWidth: 380,
+            height: 'fit-content',
+            maxHeight: { xs: 'calc(100vh - 32px)', sm: 'calc(100vh - 48px)' },
             display: 'flex',
             flexDirection: 'column',
             borderRadius: 2,
