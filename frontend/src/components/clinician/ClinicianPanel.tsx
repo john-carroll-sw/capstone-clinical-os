@@ -477,7 +477,7 @@ export function ClinicianPanel({ department }: ClinicianPanelProps) {
   const selectedPatient = PATIENTS.find(p => p.id === selectedPatientId) || PATIENTS[0];
 
   return (
-    <Box sx={{ display: 'flex', height: '100%', overflow: 'hidden', mx: -3, mt: -3, mb: -3 }}>
+    <Box sx={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
       {/* Left: Blurred EHR background */}
       <EHRBackground />
 

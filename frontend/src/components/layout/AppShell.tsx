@@ -300,7 +300,8 @@ export function AppShell() {
   const isClinicianSurface = surface === "clinician";
 
   const feedbackButtonPosition = {
-    bottom: isClinicianSurface ? { xs: 104, sm: 112 } : { xs: 24, sm: 24 },
+    top: isClinicianSurface ? { xs: 12, sm: 12 } : "auto",
+    bottom: isClinicianSurface ? "auto" : { xs: 24, sm: 24 },
     right: isGlobalAssistantOpen ? { xs: 16, md: 456 } : { xs: 16, sm: 24 },
     zIndex: (theme: Theme) => (
       isGlobalAssistantOpen ? theme.zIndex.drawer + 4 : theme.zIndex.drawer + 1
@@ -308,7 +309,8 @@ export function AppShell() {
   };
 
   const feedbackWidgetPosition = {
-    bottom: isClinicianSurface ? { xs: 168, sm: 176 } : { xs: 88, sm: 92 },
+    top: isClinicianSurface ? { xs: 72, sm: 76 } : "auto",
+    bottom: isClinicianSurface ? "auto" : { xs: 88, sm: 92 },
     right: isGlobalAssistantOpen ? { xs: 16, md: 456 } : { xs: 16, sm: 24 },
     zIndex: (theme: Theme) => theme.zIndex.drawer + 4,
   };
@@ -379,7 +381,16 @@ export function AppShell() {
         </AppBar>
 
         {/* Page Content */}
-        <Box sx={{ p: 3, flex: 1, overflow: "auto", display: "flex", flexDirection: "column", minHeight: 0 }}>
+        <Box
+          sx={{
+            p: isClinicianSurface ? 0 : 3,
+            flex: 1,
+            overflow: isClinicianSurface ? "hidden" : "auto",
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 0,
+          }}
+        >
           {renderPage()}
         </Box>
       </Box>
