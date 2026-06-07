@@ -29,9 +29,9 @@ import {
   Fade,
 } from '@mui/material';
 import { Warning, FiberManualRecord, Send, AutoAwesome, RestartAlt } from '@mui/icons-material';
-import ReactMarkdown from 'react-markdown';
 import { customColors } from '../../theme/muiTheme';
 import { useTheme } from '../../context/ThemeContext';
+import { MarkdownContent } from '../common/MarkdownContent';
 import { PATIENTS, type Patient } from '../../data/healthcare/patients';
 import { PharmacyAlertQueue } from './PharmacyAlertQueue';
 import { NursingHandoffView } from './NursingHandoffView';
@@ -373,7 +373,7 @@ function InlineAIAssistant({ department }: InlineAIAssistantProps) {
                     '& strong': { fontWeight: 600 },
                   }}
                 >
-                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  <MarkdownContent>{msg.content}</MarkdownContent>
                 </Paper>
               </Box>
             </Fade>

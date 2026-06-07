@@ -22,12 +22,12 @@ import {
   ExpandLess,
   Close,
 } from "@mui/icons-material";
-import ReactMarkdown from "react-markdown";
 import {
   DonutChart,
   StatCard,
   AlertBanner,
 } from "./AIChartComponents";
+import { MarkdownContent } from "../common/MarkdownContent";
 import { renderIcon, responseTypeIcons } from "../../utils/icons";
 import { customColors } from "../../theme/muiTheme";
 
@@ -233,7 +233,7 @@ export function AIResponseCard({
       {/* Summary (always visible in minimized view) */}
       {!isFullscreen && (
         <Box sx={{ px: 1.5, py: 1.25, color: "text.secondary", ...markdownStyles }}>
-          <ReactMarkdown>{summary}</ReactMarkdown>
+          <MarkdownContent>{summary}</MarkdownContent>
         </Box>
       )}
 
@@ -262,7 +262,7 @@ export function AIResponseCard({
                   ...markdownStyles,
                 }}
               >
-                <ReactMarkdown>{summary}</ReactMarkdown>
+                <MarkdownContent>{summary}</MarkdownContent>
               </Paper>
             </Box>
           )}

@@ -43,8 +43,8 @@ import {
   FiberManualRecord,
   ExpandMore,
 } from "@mui/icons-material";
-import ReactMarkdown from "react-markdown";
 import { customColors } from "../../theme/muiTheme";
+import { MarkdownContent } from "../common/MarkdownContent";
 import { useUser } from "../../context/UserContext";
 import {
   fetchBriefing,
@@ -482,7 +482,7 @@ export function ForYouPage({ onOpenChat }: ForYouPageProps) {
                 "& a": { color: customColors.accent.cyan },
               }}
             >
-              <ReactMarkdown>{formatNarrativeAsList(briefing.narrative)}</ReactMarkdown>
+              <MarkdownContent>{formatNarrativeAsList(briefing.narrative)}</MarkdownContent>
             </Box>
 
             <Box

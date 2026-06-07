@@ -46,9 +46,9 @@ import {
   ExpandLess,
   ExpandMore,
 } from "@mui/icons-material";
-import ReactMarkdown from "react-markdown";
 import { customColors } from "../../theme/muiTheme";
 import { AIResponseCard, type ResponseType } from "./AIResponseCard";
+import { MarkdownContent } from "../common/MarkdownContent";
 import { usePreference } from "../../services/preferencesStore";
 import { useUser } from "../../context/UserContext";
 import { axiosInstance } from "../../api/axiosInstance";
@@ -1707,9 +1707,7 @@ function ChatMessage({ message, isFullscreen, onExpand, userInitials }: ChatMess
               },
             }}
           >
-            <Box className="markdown-content">
-              <ReactMarkdown>{message.content}</ReactMarkdown>
-            </Box>
+            <MarkdownContent className="markdown-content">{message.content}</MarkdownContent>
           </Paper>
         )}
 
