@@ -96,11 +96,11 @@ export const GOVERNANCE_POLICIES: GovernancePolicy[] = [
 // ─── Allowed Models ──────────────────────────────────────────
 
 export const ALLOWED_MODELS: AllowedModel[] = [
-  { modelId: 'med-alert-v2.3', modelName: 'MedAlert Triage', vendor: 'ClinicalOS Internal', version: '2.3', approvedFor: ['uc-alert-prioritization'], maxTokens: 2048, requiresHumanReview: true },
-  { modelId: 'chart-summary-v1.8', modelName: 'ChartSummary', vendor: 'ClinicalOS Internal', version: '1.8', approvedFor: ['uc-drug-interaction'], maxTokens: 4096, requiresHumanReview: false },
-  { modelId: 'handoff-v3.1', modelName: 'HandoffGen', vendor: 'ClinicalOS Internal', version: '3.1', approvedFor: ['uc-handoff-summary'], maxTokens: 4096, requiresHumanReview: true },
-  { modelId: 'patient-summary-v1.0', modelName: 'PatientSnap', vendor: 'ClinicalOS Internal', version: '1.0', approvedFor: ['uc-patient-summary'], maxTokens: 2048, requiresHumanReview: false },
-  { modelId: 'sepsis-v0.5-beta', modelName: 'SepsisWatch', vendor: 'ClinicalOS Internal', version: '0.5-beta', approvedFor: ['uc-sepsis-early-warning'], maxTokens: 1024, requiresHumanReview: true },
+  { modelId: 'med-alert-v2.3', modelName: 'MedAlert Triage', vendor: 'HelixGuard Internal', version: '2.3', approvedFor: ['uc-alert-prioritization'], maxTokens: 2048, requiresHumanReview: true },
+  { modelId: 'chart-summary-v1.8', modelName: 'ChartSummary', vendor: 'HelixGuard Internal', version: '1.8', approvedFor: ['uc-drug-interaction'], maxTokens: 4096, requiresHumanReview: false },
+  { modelId: 'handoff-v3.1', modelName: 'HandoffGen', vendor: 'HelixGuard Internal', version: '3.1', approvedFor: ['uc-handoff-summary'], maxTokens: 4096, requiresHumanReview: true },
+  { modelId: 'patient-summary-v1.0', modelName: 'PatientSnap', vendor: 'HelixGuard Internal', version: '1.0', approvedFor: ['uc-patient-summary'], maxTokens: 2048, requiresHumanReview: false },
+  { modelId: 'sepsis-v0.5-beta', modelName: 'SepsisWatch', vendor: 'HelixGuard Internal', version: '0.5-beta', approvedFor: ['uc-sepsis-early-warning'], maxTokens: 1024, requiresHumanReview: true },
 ];
 
 // ─── Prompt Templates ────────────────────────────────────────

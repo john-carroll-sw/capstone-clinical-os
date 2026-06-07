@@ -1,8 +1,8 @@
-# ClinicalOS Docs Structure Rules
+# HelixGuard Docs Structure Rules
 
 **Template Version:** v20260129.1
 
-These rules enforce documentation consistency for the ClinicalOS project.
+These rules enforce documentation consistency for the HelixGuard project.
 
 ---
 

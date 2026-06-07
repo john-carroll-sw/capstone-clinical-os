@@ -6,7 +6,7 @@
  *
  * Environment variables (set in Vercel Dashboard):
  *   GITHUB_TOKEN  — Fine-grained PAT with Issues:Write + Contents:Write
- *   GITHUB_REPO   — owner/repo (e.g. "john-carroll-sw/capstone-clinical-os")
+ *   GITHUB_REPO   — owner/repo (e.g. "john-carroll-sw/capstone-helixguard")
  */
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';

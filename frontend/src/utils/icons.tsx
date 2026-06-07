@@ -1,5 +1,5 @@
 /**
- * Centralized icon mappings for ClinicalOS
+ * Centralized icon mappings for HelixGuard
  * Uses Material UI icons for professional C-suite appearance
  */
 

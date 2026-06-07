@@ -7,7 +7,7 @@
  * - Governance: Registry, Audit, RBAC, Allowlists
  * 
  * Always shows: Home (back to demo index), Settings
- * Includes persona switcher and profile/theme controls.
+ * Includes profile/theme controls.
  */
 
 import { useState } from "react";
@@ -43,7 +43,6 @@ import {
   LocalHospital,
   Shield,
   NotificationsActive,
-  Home,
   MedicalServices,
   SwapHoriz,
   Gavel,
@@ -54,29 +53,7 @@ import {
 import { useTheme, type Theme } from "../../context/ThemeContext";
 import { usePersona } from "../../context/PersonaContext";
 import { customColors } from "../../theme/muiTheme";
-import { PersonaSwitcher } from "../PersonaSwitcher";
 import type { Surface } from "./AppShell";
-
-/**
- * Get user initials from display name
- */
-function getInitials(displayName: string | undefined): string {
-  if (!displayName) return '?';
-  
-  const withoutSuffix = displayName.replace(/\s*\([^)]*\)\s*$/, '').trim();
-  
-  if (withoutSuffix.includes(',')) {
-    const [last, first] = withoutSuffix.split(',').map(s => s.trim());
-    return `${first?.[0] || ''}${last?.[0] || ''}`.toUpperCase();
-  }
-  
-  const parts = withoutSuffix.split(/\s+/);
-  if (parts.length >= 2) {
-    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-  }
-  
-  return withoutSuffix.substring(0, 2).toUpperCase();
-}
 
 const SIDEBAR_WIDTH = 260;
 const SIDEBAR_COLLAPSED_WIDTH = 72;
@@ -136,7 +113,7 @@ function getSurfaceLabel(surface: Surface): string {
     case "leadership": return "Leadership Dashboard";
     case "clinician": return "Clinician Panel";
     case "governance": return "Governance";
-    default: return "ClinicalOS";
+    default: return "HelixGuard";
   }
 }
 
@@ -274,7 +251,7 @@ export function AppSidebar({
         }}
       >
         {/* Logo — click to go home */}
-        <Tooltip title={collapsed ? "Back to ClinicalOS Home" : ""} placement="right">
+        <Tooltip title={collapsed ? "Back to HelixGuard Home" : ""} placement="right">
           <Box
             onClick={() => onNavigate("/")}
             sx={{
@@ -307,7 +284,7 @@ export function AppSidebar({
                 fontSize: "1.1rem",
               }}
             >
-              C
+              H
             </Avatar>
             {!collapsed && (
               <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -320,7 +297,7 @@ export function AppSidebar({
                     fontSize: "1.1rem",
                   }}
                 >
-                  ClinicalOS
+                  HelixGuard
                 </Typography>
                 <Typography
                   variant="caption"
@@ -384,33 +361,6 @@ export function AppSidebar({
             />
           )}
         </List>
-
-        {/* Persona Switcher (compact, in sidebar) */}
-        {!collapsed && (
-          <>
-            <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />
-            <Box sx={{ 
-              color: isDark ? "text.primary" : "#fff",
-              '& .MuiTypography-root': {
-                color: isDark ? undefined : 'rgba(255,255,255,0.85)',
-              },
-              '& .MuiTypography-root:first-of-type': {
-                color: isDark ? undefined : '#fff',
-                fontWeight: isDark ? undefined : 600,
-              },
-              '& .MuiChip-root': {
-                color: isDark ? undefined : 'rgba(255,255,255,0.9)',
-                borderColor: isDark ? undefined : 'rgba(255,255,255,0.3)',
-              },
-              '& .MuiAvatar-root': {
-                bgcolor: isDark ? undefined : 'rgba(255,255,255,0.2)',
-                color: isDark ? undefined : '#fff',
-              },
-            }}>
-              <PersonaSwitcher compact />
-            </Box>
-          </>
-        )}
 
         {/* Settings link */}
         <Divider sx={{ borderColor: isDark ? customColors.dark.hover : "rgba(255, 255, 255, 0.1)" }} />

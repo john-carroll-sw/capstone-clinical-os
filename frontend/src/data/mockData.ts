@@ -1,7 +1,7 @@
 /**
  * CENTRALIZED MOCK DATA
  * =====================
- * ALL mock data for ClinicalOS lives here.
+ * ALL mock data for HelixGuard lives here.
  * When replacing with real API calls, search for imports from this file.
  * 
  * Data includes:

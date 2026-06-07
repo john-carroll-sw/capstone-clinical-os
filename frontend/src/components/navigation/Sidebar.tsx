@@ -19,10 +19,10 @@ export function Sidebar() {
     <aside className="sidebar">
       <div className="sidebar-header">
         <div className="sidebar-logo">
-          <span className="logo-mark">T</span>
-          <span className="logo-text">ClinicalOS</span>
+          <span className="logo-mark">H</span>
+          <span className="logo-text">HelixGuard</span>
         </div>
-        <span className="logo-tagline">Executive Portfolio OS</span>
+        <span className="logo-tagline">Clinical AI Governance</span>
       </div>
 
       <nav className="sidebar-nav">
@@ -62,4 +62,3 @@ export function Sidebar() {
 }
 
 export default Sidebar;
-

@@ -1,5 +1,5 @@
 /**
- * Mock AI Chat Responses for ClinicalOS
+ * Mock AI Chat Responses for HelixGuard
  * 
  * Surface-specific mock responses keyed by quick-prompt text.
  * When the backend API is unavailable (demo/capstone mode), the chat panel
@@ -339,7 +339,7 @@ export function getMockChatResponse(
  * Generic fallback response when no specific mock matches.
  */
 export const GENERIC_MOCK_FALLBACK: MockChatResponse = {
-  content: `I can help you with that! In the full ClinicalOS deployment, I'd pull real-time data from the clinical AI platform to answer your question.
+  content: `I can help you with that! In the full HelixGuard deployment, I'd pull real-time data from the clinical AI platform to answer your question.
 
 For this demo, try one of the **quick prompts** below — they'll show you the kind of rich, contextual responses the system provides.`,
   sources: [{ name: 'System', confidence: 1, kind: 'system' }],

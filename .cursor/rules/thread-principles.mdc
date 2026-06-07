@@ -1,14 +1,14 @@
 ---
-description: ClinicalOS Design Principle enforcement — the "soul" of the product
+description: HelixGuard Design Principle enforcement — the "soul" of the product
 apply_when: always
 priority: 20
 ---
 
-# ClinicalOS Design Principles
+# HelixGuard Design Principles
 
-> **Soul reference:** See `docs/foundations/SOUL.md` for ClinicalOS's agent identity — who we are, how we behave, what we never do. This rule enforces the soul in every feature.
+> **Soul reference:** See `docs/foundations/SOUL.md` for HelixGuard's agent identity — who we are, how we behave, what we never do. This rule enforces the soul in every feature.
 
-> "Surveillance erodes trust. ClinicalOS builds it through mutual visibility."
+> "Surveillance erodes trust. HelixGuard builds it through mutual visibility."
 
 ## The Seven Principles
 
@@ -33,7 +33,7 @@ priority: 20
 | Does this empower the person in front of you? | Always — primary soul test |
 | Does it pass the voluntary use test? | Yes — teams would use this even if leadership never saw the output |
 
-## What ClinicalOS Will NEVER Do
+## What HelixGuard Will NEVER Do
 
 1. **Never create one-way surveillance** — If leadership sees it, teams must get value
 2. **Never add burden without removing more** — Net burden must decrease

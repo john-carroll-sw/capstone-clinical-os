@@ -1,11 +1,11 @@
-# ClinicalOS - Clinical AI Governance & Decision Support
+# HelixGuard - Clinical AI Governance & Decision Support
 # Infrastructure configuration (genericized for capstone project)
 
-app_name: "clinicalos"
+app_name: "helixguard"
 
 # Tags (placeholder)
 tags:
-  Project: "ClinicalOS"
+  Project: "HelixGuard"
   Environment: "development"
 
 # Note: Original infrastructure config contained corporate-specific

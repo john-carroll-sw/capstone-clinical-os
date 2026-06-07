@@ -1,5 +1,5 @@
 /**
- * Mock pharmacy medication alerts for ClinicalOS
+ * Mock pharmacy medication alerts for HelixGuard
  * 
  * Simulates the alert queue a pharmacist sees when reviewing medication orders.
  * AI has pre-triaged these: high-priority get full summaries, low-priority are suppressed.

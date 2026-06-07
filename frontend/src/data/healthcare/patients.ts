@@ -1,5 +1,5 @@
 /**
- * Mock patient roster for ClinicalOS
+ * Mock patient roster for HelixGuard
  * 
  * No real PHI — all names, MRNs, and clinical data are fictional.
  * Used by both Pharmacy and Nursing clinician views.

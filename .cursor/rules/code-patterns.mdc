@@ -1,10 +1,10 @@
 ---
-description: Development conventions and code patterns for ClinicalOS
+description: Development conventions and code patterns for HelixGuard
 apply_when: always
 priority: 50
 ---
 
-# Code Patterns for ClinicalOS
+# Code Patterns for HelixGuard
 
 ## API Design
 
@@ -33,7 +33,7 @@ priority: 50
 frontend/src/
 ├── components/
 │   ├── common/       # Reusable UI primitives
-│   ├── clinicalos/   # ClinicalOS-specific components
+│   ├── helixguard/   # HelixGuard-specific components
 │   └── layout/       # Page structure components
 ├── pages/            # Route-level components
 ├── hooks/            # Custom React hooks

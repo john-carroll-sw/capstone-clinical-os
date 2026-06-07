@@ -1,6 +1,6 @@
 /**
  * MUI Theme Configuration
- * ClinicalOS - Clinical AI Governance & Decision Support
+ * HelixGuard - Clinical AI Governance & Decision Support
  * 
  * Light mode: Brand colors
  * Dark mode: Modern executive dashboard

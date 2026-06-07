@@ -1,5 +1,5 @@
 /**
- * User Profile Types for ClinicalOS
+ * User Profile Types for HelixGuard
  * 
  * The primary user identifier is the `lanID` from the Okta token.
  * This should be used for all database interactions and audit trails.

@@ -76,7 +76,7 @@ export function Header() {
       '/settings': 'Settings',
       '/dev-panel': 'Dev Panel',
     };
-    return titles[path] || 'ClinicalOS';
+    return titles[path] || 'HelixGuard';
   };
 
   const getCurrentDate = () => {

@@ -1,5 +1,5 @@
 /**
- * Environment configuration for ClinicalOS
+ * Environment configuration for HelixGuard
  * All environment variables are validated and typed here
  */
 

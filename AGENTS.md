@@ -1,30 +1,30 @@
-# Agent Instructions for ClinicalOS Development
+# Agent Instructions for HelixGuard Development
 
-This repo contains ClinicalOS — a healthcare AI governance platform for an Executive MBA capstone project.
+This repo contains HelixGuard — a healthcare AI governance platform for an Executive MBA capstone project.
 
 ---
 
 ## Before ANY Work
 
-0. **Read `docs/foundations/SOUL.md`** — ClinicalOS's agent soul: who we are, how we behave, what we never do
+0. **Read `docs/foundations/SOUL.md`** — HelixGuard's agent soul: who we are, how we behave, what we never do
 1. **Read `docs/strategy/`** — Strategic context and goals (Note: docs are being replaced/updated)
-2. **Check `docs/requirements/PRD_*.md` Section 2.4** — ClinicalOS success metrics (Note: docs are being replaced/updated)
+2. **Check `docs/requirements/PRD_*.md` Section 2.4** — HelixGuard success metrics (Note: docs are being replaced/updated)
 3. **Review `docs/README.md`** — Feature dashboard and spec status (Note: docs are being replaced/updated)
 
 ---
 
 ## Strategic Validation
 
-ClinicalOS is a healthcare AI governance platform focused on responsible AI deployment and oversight.
+HelixGuard is a healthcare AI governance platform focused on responsible AI deployment and oversight.
 
 Before completing ANY task, answer:
 
-- [ ] **Does this advance ClinicalOS's core mission?** (Healthcare AI governance and oversight)
-- [ ] **Which ClinicalOS success metric does this advance?** (See PRD 2.4, if available)
+- [ ] **Does this advance HelixGuard's core mission?** (Healthcare AI governance and oversight)
+- [ ] **Which HelixGuard success metric does this advance?** (See PRD 2.4, if available)
 - [ ] **Does it follow Design Principles?** (See `.cursor/rules/thread-principles.mdc`)
 - [ ] **Does it create bidirectional value?** (Leadership + Teams both benefit)
 
-If an item doesn't clearly align with ClinicalOS's mission, flag it as **exploratory** and confirm before proceeding.
+If an item doesn't clearly align with HelixGuard's mission, flag it as **exploratory** and confirm before proceeding.
 
 ---
 
@@ -40,7 +40,7 @@ If an item doesn't clearly align with ClinicalOS's mission, flag it as **explora
 ## When Writing Specs/Docs
 
 - Apply `.cursor/rules/docs-structure.md` — Documentation lifecycle
-- Include **Strategic Alignment** section with ClinicalOS mission reference
+- Include **Strategic Alignment** section with HelixGuard mission reference
 - Use template: `docs/specs/_template.md` (Note: templates are being updated)
 - Update `docs/README.md` Feature Dashboard when moving specs (Note: docs are being replaced/updated)
 
@@ -60,7 +60,7 @@ If an item doesn't clearly align with ClinicalOS's mission, flag it as **explora
 ## Git Workflow
 
 - Apply `.cursor/rules/git-workflow.mdc` — Branch naming, commit messages, PR requirements
-- PRs MUST include ClinicalOS mission alignment
+- PRs MUST include HelixGuard mission alignment
 - Reference success metrics being advanced
 
 ---
@@ -69,9 +69,9 @@ If an item doesn't clearly align with ClinicalOS's mission, flag it as **explora
 
 | Purpose | File |
 |---------|------|
-| ClinicalOS agent soul | `docs/foundations/SOUL.md` (Note: being replaced/updated) |
+| HelixGuard agent soul | `docs/foundations/SOUL.md` (Note: being replaced/updated) |
 | Strategic context | `docs/strategy/` (Note: being replaced/updated) |
-| ClinicalOS success metrics | `docs/requirements/PRD_*.md` (Section 2.4) (Note: being replaced/updated) |
+| HelixGuard success metrics | `docs/requirements/PRD_*.md` (Section 2.4) (Note: being replaced/updated) |
 | Design principles | `docs/foundations/Design_Principles.md` (Note: being replaced/updated) |
 | Product thesis | `docs/foundations/Thread_Thesis_Vision.md` (Note: being replaced/updated) |
 | Feature dashboard | `docs/README.md` (Note: being replaced/updated) |

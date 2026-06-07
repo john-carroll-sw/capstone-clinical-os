@@ -14,7 +14,7 @@ import { Box, Typography, TextField, Button, Paper, Alert, InputAdornment, IconB
 import { Lock, Visibility, VisibilityOff } from '@mui/icons-material';
 
 const DEMO_PASS = import.meta.env.VITE_DEMO_PASS as string | undefined;
-const SESSION_KEY = 'clinicalos_demo_auth';
+const SESSION_KEY = 'helixguard_demo_auth';
 
 function isAuthenticated(): boolean {
   if (!DEMO_PASS) return true; // no password configured — skip gate
@@ -84,7 +84,7 @@ export function DemoAuthGate({ children }: { children: ReactNode }) {
         </Box>
 
         <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5, color: '#003087' }}>
-          ClinicalOS
+          HelixGuard
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
           Enter the demo password to continue

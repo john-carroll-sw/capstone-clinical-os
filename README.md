@@ -1,4 +1,4 @@
-# ClinicalOS
+# HelixGuard
 
 **Clinical AI Governance & Decision Support Platform**
 
@@ -8,13 +8,13 @@ One platform, three purpose-built surfaces. Each persona sees exactly what they 
 
 **Govern &rarr; Embed &rarr; Measure**
 
-![ClinicalOS Demo Index — Three surfaces for three personas](docs/images/readme/hero-demo-index.png)
+![HelixGuard Demo Index — Three surfaces for three personas](docs/images/readme/hero-demo-index.png)
 
 ---
 
 ## Live Demo
 
-**[clinicalos.vercel.app](https://clinicalos.vercel.app)**
+**[helixguard.vercel.app](https://helixguard.vercel.app)**
 
 Password-gated for demo access. Contact the author for credentials.
 
@@ -47,17 +47,17 @@ Healthcare systems are deploying clinical AI tools — medication alert triage, 
 | "Is our AI program actually improving outcomes?" | Leadership |
 | "Which models are approved, and what's the audit trail?" | Governance / Compliance |
 
-Today, these answers live in disconnected spreadsheets, Slack threads, and quarterly reports. ClinicalOS brings them into one platform.
+Today, these answers live in disconnected spreadsheets, Slack threads, and quarterly reports. HelixGuard brings them into one platform.
 
 ---
 
 ## The Solution
 
-ClinicalOS provides **three surfaces** — each designed for a specific persona, all sharing the same data layer:
+HelixGuard provides **three surfaces** — each designed for a specific persona, all sharing the same data layer:
 
 ```mermaid
 graph LR
-    subgraph ClinicalOS["ClinicalOS Platform"]
+    subgraph HelixGuard["HelixGuard Platform"]
         CP["Clinician Panel<br/><i>Use AI safely</i>"]
         LD["Leadership Dashboard<br/><i>Measure outcomes</i>"]
         GC["Governance Control Plane<br/><i>Approve & audit</i>"]
@@ -70,7 +70,7 @@ graph LR
     DATA --> AUDIT["Audit Trail"]
     DATA --> METRICS["KR Attainment"]
 
-    style ClinicalOS fill:#f0f4ff,stroke:#1a2b5f,stroke-width:2px
+    style HelixGuard fill:#f0f4ff,stroke:#1a2b5f,stroke-width:2px
     style CP fill:#e8f5e9,stroke:#2e7d32
     style LD fill:#e3f2fd,stroke:#1565c0
     style GC fill:#fff3e0,stroke:#e65100
@@ -239,7 +239,7 @@ journey
     title Pharmacist Morning Alert Review
     section Open Shift
       Log into EHR: 3: Pharmacist
-      ClinicalOS loads in sidebar: 5: System
+      HelixGuard loads in sidebar: 5: System
     section Review Queue
       See 6 patients with alerts: 4: Pharmacist
       Select high-priority patient: 5: Pharmacist
@@ -259,7 +259,7 @@ journey
 journey
     title VP Weekly Program Check-In
     section Morning Briefing
-      Open ClinicalOS Leadership: 5: VP
+      Open HelixGuard Leadership: 5: VP
       Read AI-generated briefing: 5: AI
       Check program health (92%): 5: VP
     section Drill Down
@@ -347,8 +347,8 @@ flowchart LR
 ### Run Locally
 
 ```bash
-git clone https://github.com/john-carroll-sw/capstone-clinical-os.git
-cd capstone-clinical-os/frontend
+git clone https://github.com/john-carroll-sw/capstone-helixguard.git
+cd capstone-helixguard/frontend
 npm install
 npm run dev
 ```
@@ -364,7 +364,7 @@ The app is configured for one-click Vercel deployment:
 3. Add environment variables:
    - `VITE_DEMO_PASS` — password for the demo gate
    - `GITHUB_TOKEN` — fine-grained PAT for feedback → GitHub Issues
-   - `GITHUB_REPO` — `john-carroll-sw/capstone-clinical-os`
+   - `GITHUB_REPO` — `john-carroll-sw/capstone-helixguard`
 4. Deploy
 
 ---
@@ -372,7 +372,7 @@ The app is configured for one-click Vercel deployment:
 ## Project Structure
 
 ```
-capstone-clinical-os/
+capstone-helixguard/
 ├── frontend/                    # React application
 │   ├── api/                     # Vercel Serverless Functions
 │   │   └── feedback.ts          # Feedback → GitHub Issues proxy
@@ -399,7 +399,7 @@ capstone-clinical-os/
 
 ## Feedback
 
-ClinicalOS has a built-in feedback widget (bottom-right corner of every page). Feedback submissions create GitHub Issues on this repository automatically — text and optional screenshots included.
+HelixGuard has a built-in feedback widget (bottom-right corner of every page). Feedback submissions create GitHub Issues on this repository automatically — text and optional screenshots included.
 
 ---
 

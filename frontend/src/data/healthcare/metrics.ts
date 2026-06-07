@@ -1,5 +1,5 @@
 /**
- * Healthcare Outcome Metrics for ClinicalOS
+ * Healthcare Outcome Metrics for HelixGuard
  * Conforms to the existing Metric type system (MetricConfig + MetricSnapshot + MetricCalculations)
  * These power the Outcomes Dashboard and MetricCard components
  */

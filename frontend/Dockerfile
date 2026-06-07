@@ -1,4 +1,4 @@
-# ClinicalOS Frontend Dockerfile
+# HelixGuard Frontend Dockerfile
 # Simplified for capstone project (local development preferred)
 
 FROM node:20-alpine AS build

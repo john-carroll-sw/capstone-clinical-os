@@ -5,7 +5,7 @@
  * Communicates: "Clinicians never open a new app — AI surfaces inline in the EHR."
  * 
  * The left side is a blurred, non-interactive mock of an EHR.
- * The right side is the actual ClinicalOS AI panel with:
+ * The right side is the actual HelixGuard AI panel with:
  * - Patient context header
  * - Pharmacy: alert priority queue with AI summaries
  * - Nursing: SBAR handoff summary with edit/sign-off

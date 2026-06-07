@@ -1,5 +1,5 @@
 /**
- * Department definitions for ClinicalOS
+ * Department definitions for HelixGuard
  * Maps to the top level of the healthcare data hierarchy:
  *   Department → AI Use Case → Workflow → Outcome Metric
  */

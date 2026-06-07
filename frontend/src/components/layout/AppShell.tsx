@@ -100,7 +100,7 @@ function getPageTitle(surface: Surface, subPage: string): string {
       allowlists: "Allowlists & Templates",
     },
   };
-  return titles[surface]?.[subPage] || "ClinicalOS";
+  return titles[surface]?.[subPage] || "HelixGuard";
 }
 
 // ─── Ask AI Button ────────────────────────────────────────────
@@ -211,9 +211,9 @@ export function AppShell() {
   // Update document title
   useEffect(() => {
     if (surface === "index") {
-      document.title = "ClinicalOS — Clinical AI Governance";
+      document.title = "HelixGuard — Clinical AI Governance";
     } else {
-      document.title = `${getPageTitle(surface, subPage)} | ClinicalOS`;
+      document.title = `${getPageTitle(surface, subPage)} | HelixGuard`;
     }
   }, [surface, subPage]);
 

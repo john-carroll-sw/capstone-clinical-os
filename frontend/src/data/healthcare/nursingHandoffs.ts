@@ -1,5 +1,5 @@
 /**
- * Mock nursing handoff summaries for ClinicalOS
+ * Mock nursing handoff summaries for HelixGuard
  * 
  * AI-generated SBAR format handoff documents for end-of-shift transitions.
  * Each handoff can be edited by the outgoing nurse before sign-off.

@@ -1098,7 +1098,7 @@ export function AIChatPanel({ isOpen, onClose, surface = 'leadership' }: AIChatP
                 </Avatar>
                 <Box>
                   <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                    ClinicalOS Assistant
+                    HelixGuard Assistant
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
                     {surface === 'governance' ? 'Ask about approvals, audits & compliance' : 'Ask anything about clinical AI operations'}

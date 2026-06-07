@@ -1,6 +1,6 @@
 /**
  * API Endpoints
- * Centralized endpoint definitions for the ClinicalOS API
+ * Centralized endpoint definitions for the HelixGuard API
  */
 
 export const API_ENDPOINTS = {

@@ -18,7 +18,7 @@ export function AuthLayout() {
           <div className="auth-logo">
             <span className="auth-logo-mark">T</span>
           </div>
-          <h1 className="auth-title">ClinicalOS</h1>
+          <h1 className="auth-title">HelixGuard</h1>
           <p className="auth-subtitle">Clinical Decision Intelligence</p>
         </div>
         
@@ -27,7 +27,7 @@ export function AuthLayout() {
         </div>
         
         <footer className="auth-footer">
-          <p>© {new Date().getFullYear()} ClinicalOS. Clinical AI Governance.</p>
+          <p>© {new Date().getFullYear()} HelixGuard. Clinical AI Governance.</p>
         </footer>
       </div>
     </div>

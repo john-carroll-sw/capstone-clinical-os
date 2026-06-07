@@ -1,6 +1,6 @@
 /**
  * Theme Context
- * Global theme management for ClinicalOS using Material UI
+ * Global theme management for HelixGuard using Material UI
  * Supports light/dark mode with brand colors
  * 
  * Uses PreferencesStore as the single source of truth for theme preference.

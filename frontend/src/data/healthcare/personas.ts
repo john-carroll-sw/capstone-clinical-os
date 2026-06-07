@@ -1,5 +1,5 @@
 /**
- * Persona definitions for ClinicalOS
+ * Persona definitions for HelixGuard
  * Powers the persona switcher — the demo superpower
  */
 

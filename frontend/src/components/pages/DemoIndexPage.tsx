@@ -1,5 +1,5 @@
 /**
- * Demo Index Page — the front door to ClinicalOS
+ * Demo Index Page — the front door to HelixGuard
  * 
  * Shows three surface cards that communicate the core thesis:
  * "One platform, three surfaces for three personas."
@@ -109,7 +109,7 @@ export function DemoIndexPage() {
               fontSize: '1.3rem',
             }}
           >
-            C
+            H
           </Avatar>
           <Typography
             variant="h3"
@@ -119,7 +119,7 @@ export function DemoIndexPage() {
               letterSpacing: '-0.02em',
             }}
           >
-            ClinicalOS
+            HelixGuard
           </Typography>
         </Box>
         <Typography

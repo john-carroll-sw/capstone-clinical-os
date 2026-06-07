@@ -9,8 +9,8 @@ priority: 30
 ## Before Completing ANY Task
 
 ### Strategic Alignment
-- [ ] Does this advance ClinicalOS's core mission? (Healthcare AI governance)
-- [ ] Is alignment noted? (`**Alignment:** ClinicalOS mission — governance improvement`)
+- [ ] Does this advance HelixGuard's core mission? (Healthcare AI governance)
+- [ ] Is alignment noted? (`**Alignment:** HelixGuard mission — governance improvement`)
 - [ ] Does this support responsible AI deployment?
 - [ ] Does it follow "Remove Burden Before Adding Value"?
 
@@ -21,7 +21,7 @@ priority: 30
 - [ ] Does this show context, not just data?
 
 ### Content Consistency
-- [ ] Does terminology match? ("ClinicalOS" = healthcare AI governance platform)
+- [ ] Does terminology match? ("HelixGuard" = healthcare AI governance platform)
 - [ ] Are cross-references valid?
 - [ ] If creating a spec, does it follow docs/specs/_template.md?
 
@@ -30,24 +30,24 @@ priority: 30
 Surface it explicitly:
 
 ```
-I noticed this work may not clearly align with ClinicalOS's mission:
+I noticed this work may not clearly align with HelixGuard's mission:
 - Current P0 focus: Core governance features, AI monitoring
 - This feature seems adjacent to current priorities
 
-Does this advance ClinicalOS's core mission? Should we proceed, or prioritize current P0 work?
+Does this advance HelixGuard's core mission? Should we proceed, or prioritize current P0 work?
 ```
 
 ## What to Avoid
 
 ### Don't
-- Create features without ClinicalOS mission alignment
+- Create features without HelixGuard mission alignment
 - Add burden without removing more
 - Create one-way surveillance (Leadership sees, Teams don't benefit)
 - Hide the loop (escalations vanish into silence)
 - Skip the "why" when explaining the "what"
 
 ### Do
-- Reference ClinicalOS mission explicitly in specs and PRs
+- Reference HelixGuard mission explicitly in specs and PRs
 - Apply Design Principles checklist
 - Ask clarifying questions about alignment
 - Validate against current sprint priorities

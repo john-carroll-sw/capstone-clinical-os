@@ -13,7 +13,7 @@ import { DemoAuthGate } from './components/DemoAuthGate';
 import './index.css';
 
 /**
- * ClinicalOS - Clinical AI Governance & Decision Support
+ * HelixGuard - Clinical AI Governance & Decision Support
  * 
  * Three surfaces for three personas:
  * - Clinician Panel: embedded EHR-style AI assistant

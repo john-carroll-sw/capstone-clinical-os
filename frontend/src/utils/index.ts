@@ -1,5 +1,5 @@
 /**
- * Utility functions for ClinicalOS
+ * Utility functions for HelixGuard
  */
 
 /**

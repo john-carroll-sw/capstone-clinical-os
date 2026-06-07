@@ -1,5 +1,5 @@
 /**
- * Auth Configuration for ClinicalOS Frontend
+ * Auth Configuration for HelixGuard Frontend
  * 
  * Authentication is DISABLED for the capstone demo.
  * The persona switcher replaces real auth.

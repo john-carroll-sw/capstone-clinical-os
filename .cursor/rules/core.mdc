@@ -1,12 +1,12 @@
 ---
-description: Core context for ClinicalOS — strategic anchor and product context
+description: Core context for HelixGuard — strategic anchor and product context
 apply_when: always
 priority: 10
 ---
 
-# ClinicalOS — Core Context
+# HelixGuard — Core Context
 
-## What ClinicalOS Is
+## What HelixGuard Is
 
 **Healthcare AI governance platform** — enables responsible AI deployment and oversight in clinical settings.
 
@@ -14,7 +14,7 @@ priority: 10
 
 ## Strategic Alignment
 
-ClinicalOS is a healthcare AI governance platform for an Executive MBA capstone project focused on responsible AI deployment.
+HelixGuard is a healthcare AI governance platform for an Executive MBA capstone project focused on responsible AI deployment.
 
 ## Current Focus
 
@@ -24,8 +24,8 @@ ClinicalOS is a healthcare AI governance platform for an Executive MBA capstone 
 
 ## When evaluating ANY work, ask:
 
-1. **Does this advance ClinicalOS's core mission?** (Healthcare AI governance)
-2. **Which ClinicalOS success metric does this advance?** (See PRD 2.4, if available)
+1. **Does this advance HelixGuard's core mission?** (Healthcare AI governance)
+2. **Which HelixGuard success metric does this advance?** (See PRD 2.4, if available)
 3. **Does it follow Design Principles?** (docs/foundations/Design_Principles.md)
 4. **Does it create bidirectional value?** (Leadership + Teams both benefit)
 
@@ -36,6 +36,6 @@ ClinicalOS is a healthcare AI governance platform for an Executive MBA capstone 
 | File | Purpose |
 |------|---------|
 | docs/strategy/ | Strategic context (Note: being replaced/updated) |
-| docs/requirements/PRD_*.md | ClinicalOS success metrics (Section 2.4) (Note: being replaced/updated) |
+| docs/requirements/PRD_*.md | HelixGuard success metrics (Section 2.4) (Note: being replaced/updated) |
 | docs/foundations/Design_Principles.md | The 7 principles (Note: being replaced/updated) |
 | docs/README.md | Feature dashboard (Note: being replaced/updated) |

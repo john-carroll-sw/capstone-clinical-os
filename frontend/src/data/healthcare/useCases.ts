@@ -1,5 +1,5 @@
 /**
- * AI Use Case definitions for ClinicalOS
+ * AI Use Case definitions for HelixGuard
  * Each use case maps to a department and has associated workflows + metrics
  */
 
