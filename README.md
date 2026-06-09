@@ -14,7 +14,7 @@ One platform, three purpose-built surfaces. Each persona sees exactly what they 
 
 ## Live Demo
 
-**[helixguard.vercel.app](https://helixguard.vercel.app)**
+**[clinicalos.vercel.app](https://clinicalos.vercel.app)**
 
 Password-gated for demo access. Contact the author for credentials.
 
@@ -347,8 +347,8 @@ flowchart LR
 ### Run Locally
 
 ```bash
-git clone https://github.com/john-carroll-sw/capstone-helixguard.git
-cd capstone-helixguard/frontend
+git clone https://github.com/john-carroll-sw/capstone-clinical-os.git
+cd capstone-clinical-os/frontend
 npm install
 npm run dev
 ```
@@ -364,7 +364,7 @@ The app is configured for one-click Vercel deployment:
 3. Add environment variables:
    - `VITE_DEMO_PASS` — password for the demo gate
    - `GITHUB_TOKEN` — fine-grained PAT for feedback → GitHub Issues
-   - `GITHUB_REPO` — `john-carroll-sw/capstone-helixguard`
+   - `GITHUB_REPO` — `john-carroll-sw/capstone-clinical-os`
 4. Deploy
 
 ---
@@ -372,7 +372,7 @@ The app is configured for one-click Vercel deployment:
 ## Project Structure
 
 ```
-capstone-helixguard/
+capstone-clinical-os/
 ├── frontend/                    # React application
 │   ├── api/                     # Vercel Serverless Functions
 │   │   └── feedback.ts          # Feedback → GitHub Issues proxy
